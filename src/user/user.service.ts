@@ -35,7 +35,7 @@ export class UserService {
       },
       'Getting user by id or throw',
     );
-    const user = this.getDocById({
+    const user = await this.getDocById({
       userId,
     });
     if (user === null) {
