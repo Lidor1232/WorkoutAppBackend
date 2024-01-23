@@ -2,9 +2,17 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as mongoose from 'mongoose';
 import environmentConfig from './config/environment.config';
+import helmet from 'helmet';
+import { useLoggerRequestId } from './middlewares/request-id-middleware';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.enableCors();
+  app.use(helmet());
+  app.use(cookieParser());
+  app.use(useLoggerRequestId);
 
   mongoose
     .connect(environmentConfig.database, {
