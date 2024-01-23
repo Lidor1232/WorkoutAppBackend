@@ -5,4 +5,6 @@ export interface User {
   userName: string;
   workouts: string[];
   password: string;
+  createdAt: string;
+  updatedAt: string;
 }

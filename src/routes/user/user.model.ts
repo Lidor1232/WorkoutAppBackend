@@ -3,36 +3,41 @@ import { modelNames } from '../../models/constans/constans';
 import { User } from './user.interface';
 import * as bcrypt from 'bcryptjs';
 
-const UserSchema = new Schema<User>({
-  firstName: {
-    type: String,
-    required: true,
-    min: 1,
-  },
-  lastName: {
-    type: String,
-    required: true,
-    min: 1,
-  },
-  userName: {
-    type: String,
-    required: true,
-    unique: true,
-    min: 1,
-  },
-  workouts: {
-    type: Array,
-    item: {
-      type: Schema.Types.ObjectId,
-      ref: modelNames.Workout,
+const UserSchema = new Schema<User>(
+  {
+    firstName: {
+      type: String,
+      required: true,
+      min: 1,
     },
-    required: true,
+    lastName: {
+      type: String,
+      required: true,
+      min: 1,
+    },
+    userName: {
+      type: String,
+      required: true,
+      unique: true,
+      min: 1,
+    },
+    workouts: {
+      type: Array,
+      item: {
+        type: Schema.Types.ObjectId,
+        ref: modelNames.Workout,
+      },
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
   },
-  password: {
-    type: String,
-    required: true,
+  {
+    timestamps: true,
   },
-});
+);
 
 UserSchema.pre('save', function (next) {
   if (!this.isModified('password')) {
