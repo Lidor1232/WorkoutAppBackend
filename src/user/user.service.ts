@@ -51,7 +51,7 @@ export class UserService {
     return user;
   }
 
-  async createUser({ user }: { user: CreateUser }) {
+  async createDoc({ user }: { user: CreateUser }) {
     logger.debug(
       {
         user,
@@ -69,7 +69,7 @@ export class UserService {
     return createdUser;
   }
 
-  async getUserByUserName({ userName }: { userName: string }) {
+  async getDocByUserName({ userName }: { userName: string }) {
     logger.debug(
       {
         userName,
@@ -89,14 +89,14 @@ export class UserService {
     return user;
   }
 
-  async getUserByUserNameOrThrow({ userName }: { userName: string }) {
+  async getDocByUserNameOrThrow({ userName }: { userName: string }) {
     logger.debug(
       {
         userName,
       },
       'Getting user by user name or throw',
     );
-    const user = await this.getUserByUserName({
+    const user = await this.getDocByUserName({
       userName,
     });
     if (user === null) {
@@ -112,7 +112,7 @@ export class UserService {
     return user;
   }
 
-  async validUserPasswordOrThrow({
+  async validDocPasswordByPasswordOrThrow({
     password,
     hash,
   }: {
@@ -140,6 +140,32 @@ export class UserService {
         isValidPassword,
       },
       'Validated user password or throw',
+    );
+  }
+
+  async docNotExistByUserNameOrThrow({
+    userName,
+  }: {
+    userName: string;
+  }): Promise<void> {
+    logger.debug(
+      {
+        userName,
+      },
+      'getting user not exist by user name or throw',
+    );
+    const user = await this.getDocByUserName({
+      userName,
+    });
+    if (user !== null) {
+      throw new BadRequestException('User exist with this user name');
+    }
+    logger.info(
+      {
+        userName,
+        user,
+      },
+      'Got user not exist by user name or throw',
     );
   }
 }

@@ -31,7 +31,7 @@ export class UserController {
   @Post('/login')
   async loginUser(@Body() body: UserLogin, @Res() res: Response) {
     // todo Finish
-    const user = await this.userService.getUserByUserNameOrThrow({
+    const user = await this.userService.getDocByUserNameOrThrow({
       userName: body.userName,
     });
     return res.status(HttpStatus.OK).json(user);
@@ -39,7 +39,10 @@ export class UserController {
 
   @Post('/create')
   async createUser(@Body() body: CreateUser, @Res() res: Response) {
-    const user = await this.userService.createUser({
+    await this.userService.docNotExistByUserNameOrThrow({
+      userName: body.userName,
+    });
+    const user = await this.userService.createDoc({
       user: body,
     });
     return res.status(HttpStatus.CREATED).json(
