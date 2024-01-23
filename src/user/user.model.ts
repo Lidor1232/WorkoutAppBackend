@@ -56,9 +56,6 @@ UserSchema.pre('save', function (next) {
   }
 
   const saltRounds = 10;
-
-  console.log({ bcrypt });
-
   bcrypt.hash(this.password, saltRounds, (err, hash) => {
     if (err) {
       return next(err);
