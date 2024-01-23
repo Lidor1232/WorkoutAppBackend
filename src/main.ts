@@ -4,7 +4,7 @@ import * as mongoose from 'mongoose';
 import environmentConfig from './config/environment.config';
 import helmet from 'helmet';
 import { useLoggerRequestId } from './middlewares/request-id-middleware';
-import cookieParser from 'cookie-parser';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
