@@ -4,9 +4,9 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import UserModel from './user.model';
-import logger from '../config/logger';
+import logger from '../../config/logger';
 import { CreateUser } from './user.dto';
-import * as BcryptService from '../utills/bcrypt/bcrypt';
+import * as BcryptService from '../../utills/bcrypt/bcrypt';
 
 @Injectable()
 export class UserService {

@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { modelNames } from '../models/constans/constans';
+import { modelNames } from '../../models/constans/constans';
 import { User } from './user.interface';
 import * as bcrypt from 'bcryptjs';
 
@@ -33,22 +33,6 @@ const UserSchema = new Schema<User>({
     required: true,
   },
 });
-
-// UserSchema.pre('save', function () {
-//   if (this.$isModified('password')) {
-//     return next();
-//   }
-//
-//   const saltRounds = 10;
-//   bcrypt.hash(this.password, saltRounds, (err, hash) => {
-//     if (err) {
-//       return next(err);
-//     }
-//
-//     this.password = hash;
-//     return next();
-//   });
-// });
 
 UserSchema.pre('save', function (next) {
   if (!this.isModified('password')) {
