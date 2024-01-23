@@ -1,9 +1,9 @@
 import { Schema, model } from 'mongoose';
 import { modelNames } from '../models/constans/constans';
-import { CreateUser, User } from './user.dto';
-import bcrypt from 'bcrypt';
+import { User } from './user.interface';
+import * as bcrypt from 'bcryptjs';
 
-const UserSchema = new Schema({
+const UserSchema = new Schema<User>({
   firstName: {
     type: String,
     required: true,
@@ -17,6 +17,7 @@ const UserSchema = new Schema({
   userName: {
     type: String,
     required: true,
+    unique: true,
     min: 1,
   },
   workouts: {
@@ -49,8 +50,23 @@ const UserSchema = new Schema({
 //   });
 // });
 
-UserSchema.pre('save', function (this) {
-  console.log(this);
+UserSchema.pre('save', function (next) {
+  if (!this.isModified('password')) {
+    return next();
+  }
+
+  const saltRounds = 10;
+
+  console.log({ bcrypt });
+
+  bcrypt.hash(this.password, saltRounds, (err, hash) => {
+    if (err) {
+      return next(err);
+    }
+
+    this.password = hash;
+    return next();
+  });
 });
 
 const UserModel = model<User>(modelNames.User, UserSchema);

@@ -1,20 +1,29 @@
-export interface User {
-  _id: string;
+import { IsNotEmpty, IsString } from 'class-validator';
+
+export class CreateUser {
+  @IsNotEmpty()
+  @IsString()
   firstName: string;
+
+  @IsNotEmpty()
+  @IsString()
   lastName: string;
+
+  @IsNotEmpty()
+  @IsString()
   userName: string;
-  workouts: string[];
+
+  @IsNotEmpty()
+  @IsString()
   password: string;
 }
 
-export interface CreateUser {
-  firstName: string;
-  lastName: string;
+export class UserLogin {
+  @IsNotEmpty()
+  @IsString()
   userName: string;
-  password: string;
-}
 
-export interface UserLogin {
-  userName: string;
+  @IsNotEmpty()
+  @IsString()
   password: string;
 }

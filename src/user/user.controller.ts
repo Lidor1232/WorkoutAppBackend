@@ -9,20 +9,20 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Response } from 'express';
-import { GetUserApiResponse } from './responses/get-user-api-response';
-import { UserLogin } from './user.dto';
+import { CreateUser, UserLogin } from './user.dto';
+import { UserApiResponse } from './responses/user-api-response';
 
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @Get(':userId')
+  @Get('/:userId')
   async getUser(@Param() params: { userId: string }, @Res() res: Response) {
     const user = await this.userService.getDocByIdOrThrow({
       userId: params.userId,
     });
     return res.status(HttpStatus.OK).json(
-      new GetUserApiResponse({
+      new UserApiResponse({
         user,
       }),
     );
@@ -30,11 +30,22 @@ export class UserController {
 
   @Post('/login')
   async loginUser(@Body() body: UserLogin, @Res() res: Response) {
+    // todo Finish
     const user = await this.userService.getUserByUserNameOrThrow({
       userName: body.userName,
     });
-    return res.status(HttpStatus.OK).json({
-      message: 'Success',
+    return res.status(HttpStatus.OK).json(user);
+  }
+
+  @Post('/create')
+  async createUser(@Body() body: CreateUser, @Res() res: Response) {
+    const user = await this.userService.createUser({
+      user: body,
     });
+    return res.status(HttpStatus.CREATED).json(
+      new UserApiResponse({
+        user,
+      }),
+    );
   }
 }

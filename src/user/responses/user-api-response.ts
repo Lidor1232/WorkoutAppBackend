@@ -1,6 +1,6 @@
-import { User } from '../user.dto';
+import { User } from '../user.interface';
 
-export class GetUserApiResponse {
+export class UserApiResponse {
   _id: string;
   firstName: string;
   lastName: string;

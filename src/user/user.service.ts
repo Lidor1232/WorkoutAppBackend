@@ -1,7 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import UserModel from './user.model';
 import logger from '../config/logger';
 import { CreateUser } from './user.dto';
+import * as BcryptService from '../utills/bcrypt/bcrypt';
 
 @Injectable()
 export class UserService {
@@ -56,6 +61,7 @@ export class UserService {
     const createdUser = await UserModel.create(user);
     logger.info(
       {
+        user,
         createdUser,
       },
       'Created user',
@@ -104,5 +110,36 @@ export class UserService {
       'Got user by user name or throw',
     );
     return user;
+  }
+
+  async validUserPasswordOrThrow({
+    password,
+    hash,
+  }: {
+    password: string;
+    hash: string;
+  }): Promise<void> {
+    logger.debug(
+      {
+        password,
+        hash,
+      },
+      'Validating user password or throw',
+    );
+    const isValidPassword = await BcryptService.isPasswordMatchHash({
+      password,
+      hash,
+    });
+    if (!isValidPassword) {
+      throw new BadRequestException('Invalid user password');
+    }
+    logger.info(
+      {
+        password,
+        hash,
+        isValidPassword,
+      },
+      'Validated user password or throw',
+    );
   }
 }
