@@ -30,11 +30,14 @@ export class UserController {
 
   @Post('/login')
   async loginUser(@Body() body: UserLogin, @Res() res: Response) {
-    // todo Finish
     const user = await this.userService.getDocByUserNameOrThrow({
       userName: body.userName,
     });
-    return res.status(HttpStatus.OK).json(user);
+    await this.userService.validDocPasswordByPasswordOrThrow({
+      hash: user.password,
+      password: body.password,
+    });
+    return res.status(HttpStatus.OK).json(new UserApiResponse({ user }));
   }
 
   @Post('/create')
