@@ -5,6 +5,7 @@ import environmentConfig from './config/environment.config';
 import helmet from 'helmet';
 import { useLoggerRequestId } from './middlewares/request-id-middleware';
 import * as cookieParser from 'cookie-parser';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -12,6 +13,7 @@ async function bootstrap() {
   app.enableCors();
   app.use(helmet());
   app.use(cookieParser());
+  app.useGlobalPipes(new ValidationPipe());
   app.use(useLoggerRequestId);
 
   mongoose
