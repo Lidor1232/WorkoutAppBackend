@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { modelNames } from '../../models/constans/constans';
+import { modelNames } from '../../models/model.constans';
 import { User } from './user.interface';
 import * as bcrypt from 'bcryptjs';
 
