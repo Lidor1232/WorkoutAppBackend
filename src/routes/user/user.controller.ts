@@ -13,6 +13,7 @@ import { CreateUser, UserLogin } from './user.dto';
 import { UserApiResponse } from './responses/user-api-response';
 import { JWTService } from '../../utills/jwt/jwt';
 import { CreateUserApiResponse } from './responses/create-user-api-response';
+import { LoginUserApiResponse } from './responses/login-user-api-response';
 
 @Controller('user')
 export class UserController {
@@ -42,7 +43,12 @@ export class UserController {
       hash: user.password,
       password: body.password,
     });
-    return res.status(HttpStatus.OK).json(new UserApiResponse({ user }));
+    const userToken = this.jwtService.createUserToken({
+      user,
+    });
+    return res
+      .status(HttpStatus.OK)
+      .json(new LoginUserApiResponse({ user, token: userToken }));
   }
 
   @Post('/create')
