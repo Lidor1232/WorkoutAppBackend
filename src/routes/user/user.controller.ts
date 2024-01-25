@@ -2,14 +2,13 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
   HttpStatus,
   Param,
   Post,
-  Res,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { Response } from 'express';
 import { CreateUser, UserLogin } from './user.dto';
 import { UserApiResponse } from './responses/user-api-response';
 import { JWTService } from '../../utills/jwt/jwt.service';
@@ -26,25 +25,24 @@ export class UserController {
     private jwtService: JWTService,
   ) {}
 
-  @UseGuards(AuthGuard)
   @Get('/:userId')
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
   async getUser(
     @Param() params: { userId: string },
-    @Res() res: Response,
     @User() reqUser: UserTokenPayload,
   ) {
     const user = await this.userService.getDocByIdOrThrow({
       userId: reqUser._id,
     });
-    return res.status(HttpStatus.OK).json(
-      new UserApiResponse({
-        user,
-      }),
-    );
+    return new UserApiResponse({
+      user,
+    });
   }
 
   @Post('/login')
-  async loginUser(@Body() body: UserLogin, @Res() res: Response) {
+  @HttpCode(HttpStatus.OK)
+  async loginUser(@Body() body: UserLogin) {
     const user = await this.userService.getDocByUserNameOrThrow({
       userName: body.userName,
     });
@@ -55,13 +53,12 @@ export class UserController {
     const userToken = this.jwtService.createUserToken({
       user,
     });
-    return res
-      .status(HttpStatus.OK)
-      .json(new LoginUserApiResponse({ user, token: userToken }));
+    return new LoginUserApiResponse({ user, token: userToken });
   }
 
   @Post('/create')
-  async createUser(@Body() body: CreateUser, @Res() res: Response) {
+  @HttpCode(HttpStatus.CREATED)
+  async createUser(@Body() body: CreateUser) {
     await this.userService.docNotExistByUserNameOrThrow({
       userName: body.userName,
     });
@@ -71,11 +68,9 @@ export class UserController {
     const userToken = this.jwtService.createUserToken({
       user,
     });
-    return res.status(HttpStatus.CREATED).json(
-      new CreateUserApiResponse({
-        user,
-        token: userToken,
-      }),
-    );
+    return new CreateUserApiResponse({
+      user,
+      token: userToken,
+    });
   }
 }
