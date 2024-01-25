@@ -11,10 +11,15 @@ import { UserService } from './user.service';
 import { Response } from 'express';
 import { CreateUser, UserLogin } from './user.dto';
 import { UserApiResponse } from './responses/user-api-response';
+import { JWTService } from '../../utills/jwt/jwt';
+import { CreateUserApiResponse } from './responses/create-user-api-response';
 
 @Controller('user')
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private jwtService: JWTService,
+  ) {}
 
   @Get('/:userId')
   async getUser(@Param() params: { userId: string }, @Res() res: Response) {
@@ -48,9 +53,13 @@ export class UserController {
     const user = await this.userService.createDoc({
       user: body,
     });
+    const userToken = this.jwtService.createUserToken({
+      user,
+    });
     return res.status(HttpStatus.CREATED).json(
-      new UserApiResponse({
+      new CreateUserApiResponse({
         user,
+        token: userToken,
       }),
     );
   }
