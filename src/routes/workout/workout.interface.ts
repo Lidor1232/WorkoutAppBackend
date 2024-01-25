@@ -4,3 +4,8 @@ export interface Workout {
   date: string;
   exercises: string[];
 }
+
+export interface CreateWorkout {
+  date: string;
+  user: string;
+}

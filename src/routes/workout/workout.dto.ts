@@ -1,9 +1,6 @@
-import { IsDate, IsMongoId } from 'class-validator';
+import { IsString } from 'class-validator';
 
 export class CreateWorkout {
-  @IsDate()
+  @IsString()
   date: string;
-
-  @IsMongoId()
-  user: string;
 }
