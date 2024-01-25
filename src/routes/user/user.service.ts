@@ -6,10 +6,12 @@ import {
 import UserModel from './user.model';
 import logger from '../../config/logger';
 import { CreateUser } from './user.dto';
-import * as BcryptService from '../../utills/bcrypt/bcrypt';
+import { BcryptService } from '../../utills/bcrypt/bcrypt';
 
 @Injectable()
 export class UserService {
+  constructor(private bcryptService: BcryptService) {}
+
   async getDocById({ userId }: { userId: string }) {
     logger.debug(
       {
@@ -126,7 +128,7 @@ export class UserService {
       },
       'Validating user password or throw',
     );
-    const isValidPassword = await BcryptService.isPasswordMatchHash({
+    const isValidPassword = await this.bcryptService.isPasswordMatchHash({
       password,
       hash,
     });
