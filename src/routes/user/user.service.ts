@@ -6,7 +6,7 @@ import {
 import UserModel from './user.model';
 import logger from '../../config/logger';
 import { CreateUser } from './user.dto';
-import { BcryptService } from '../../utills/bcrypt/bcrypt';
+import { BcryptService } from '../../utills/bcrypt/bcrypt.service';
 
 @Injectable()
 export class UserService {

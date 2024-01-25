@@ -6,14 +6,18 @@ import {
   Param,
   Post,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Response } from 'express';
 import { CreateUser, UserLogin } from './user.dto';
 import { UserApiResponse } from './responses/user-api-response';
-import { JWTService } from '../../utills/jwt/jwt';
+import { JWTService } from '../../utills/jwt/jwt.service';
 import { CreateUserApiResponse } from './responses/create-user-api-response';
 import { LoginUserApiResponse } from './responses/login-user-api-response';
+import { AuthGuard } from '../../guard/auth.guard';
+import { User } from '../../decorators/user.decorator';
+import { UserTokenPayload } from './user.interface';
 
 @Controller('user')
 export class UserController {
@@ -22,10 +26,15 @@ export class UserController {
     private jwtService: JWTService,
   ) {}
 
+  @UseGuards(AuthGuard)
   @Get('/:userId')
-  async getUser(@Param() params: { userId: string }, @Res() res: Response) {
+  async getUser(
+    @Param() params: { userId: string },
+    @Res() res: Response,
+    @User() reqUser: UserTokenPayload,
+  ) {
     const user = await this.userService.getDocByIdOrThrow({
-      userId: params.userId,
+      userId: reqUser._id,
     });
     return res.status(HttpStatus.OK).json(
       new UserApiResponse({
