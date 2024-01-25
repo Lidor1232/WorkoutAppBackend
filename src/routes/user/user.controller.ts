@@ -17,15 +17,18 @@ import { LoginUserApiResponse } from './responses/login-user-api-response';
 import { AuthGuard } from '../../guard/auth.guard';
 import { User } from '../../decorators/user.decorator';
 import { UserTokenPayload } from './user.interface';
+import { WorkoutService } from '../workout/workout.service';
+import { GetUserWorkoutsApiResponse } from './responses/get-user-workouts-api-response';
 
 @Controller('user')
 export class UserController {
   constructor(
     private userService: UserService,
     private jwtService: JWTService,
+    private workoutService: WorkoutService,
   ) {}
 
-  @Get('/:userId')
+  @Get('/details/:userId')
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   async getUser(
@@ -71,6 +74,19 @@ export class UserController {
     return new CreateUserApiResponse({
       user,
       token: userToken,
+    });
+  }
+
+  @Get('/workouts')
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async getUserWorkouts(@User() user: UserTokenPayload) {
+    const workouts = await this.workoutService.getDocsByUserId({
+      userId: user._id,
+    });
+    return new GetUserWorkoutsApiResponse({
+      workouts,
+      userId: user._id,
     });
   }
 }
