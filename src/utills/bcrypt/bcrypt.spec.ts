@@ -1,16 +1,36 @@
-import { isPasswordMatchHash } from './bcrypt';
+import { Test } from '@nestjs/testing';
+import { BcryptService } from './bcrypt.service';
 
-test('isPasswordMatchHash', function () {
-  expect(
-    isPasswordMatchHash({
-      hash: '$2a$10$Ph2LQ0YOoL3oDF0c3CjBZemj162jggRkzBxNJGp.emWi6aP/82ste',
-      password: 'lidor123',
-    }),
-  ).resolves.toBe(true);
-  expect(
-    isPasswordMatchHash({
-      hash: '$2a$10$Ph2LQ0YOoL3oDF0c3CjBZemj162jggRkzBxNJGp.emWi6aP/82ste',
-      password: 'lidor1',
-    }),
-  ).resolves.toBe(false);
+describe('BcryptService', () => {
+  let bcryptService;
+
+  beforeEach(async () => {
+    const module = await Test.createTestingModule({
+      providers: [BcryptService],
+    }).compile();
+
+    bcryptService = module.get<BcryptService>(BcryptService);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should return true if the password matches the hash', async () => {
+    await expect(
+      bcryptService.isPasswordMatchHash({
+        password: 'lidor123',
+        hash: '$2a$10$Ph2LQ0YOoL3oDF0c3CjBZemj162jggRkzBxNJGp.emWi6aP/82ste',
+      }),
+    ).resolves.toBe(true);
+  });
+
+  it('should return false if the password does not match the hash', async () => {
+    await expect(
+      bcryptService.isPasswordMatchHash({
+        password: 'lidor1',
+        hash: '$2a$10$Ph2LQ0YOoL3oDF0c3CjBZemj162jggRkzBxNJGp.emWi6aP/82ste',
+      }),
+    ).resolves.toBe(false);
+  });
 });

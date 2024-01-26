@@ -4,12 +4,14 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import UserModel from './user.model';
-import logger from '../config/logger';
+import logger from '../../config/logger';
 import { CreateUser } from './user.dto';
-import * as BcryptService from '../utills/bcrypt/bcrypt';
+import { BcryptService } from '../../utills/bcrypt/bcrypt.service';
 
 @Injectable()
 export class UserService {
+  constructor(private bcryptService: BcryptService) {}
+
   async getDocById({ userId }: { userId: string }) {
     logger.debug(
       {
@@ -35,7 +37,7 @@ export class UserService {
       },
       'Getting user by id or throw',
     );
-    const user = this.getDocById({
+    const user = await this.getDocById({
       userId,
     });
     if (user === null) {
@@ -126,7 +128,7 @@ export class UserService {
       },
       'Validating user password or throw',
     );
-    const isValidPassword = await BcryptService.isPasswordMatchHash({
+    const isValidPassword = await this.bcryptService.isPasswordMatchHash({
       password,
       hash,
     });
@@ -166,6 +168,42 @@ export class UserService {
         user,
       },
       'Got user not exist by user name or throw',
+    );
+  }
+
+  async addWorkoutToDocByIdOrThrow({
+    workoutId,
+    userId,
+  }: {
+    userId: string;
+    workoutId: string;
+  }): Promise<void> {
+    logger.debug(
+      {
+        userId,
+        workoutId,
+      },
+      'Adding workout to user by id or throw',
+    );
+    const updatedResult = await UserModel.updateOne(
+      {
+        _id: userId,
+      },
+      {
+        $push: {
+          workouts: workoutId,
+        },
+      },
+    );
+    if (updatedResult.nModified === 0) {
+      throw new Error('Workout not added to user');
+    }
+    logger.info(
+      {
+        userId,
+        workoutId,
+      },
+      'Added workout to user by id or throw',
     );
   }
 }
