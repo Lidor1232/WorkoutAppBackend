@@ -17,8 +17,14 @@ const ExerciseSchema = new Schema<Exercise>(
     sets: {
       type: Array,
       items: {
-        type: Schema.Types.ObjectId,
-        ref: modelNames.Set,
+        weight: {
+          type: Number,
+          required: true,
+        },
+        reps: {
+          type: Number,
+          required: true,
+        },
       },
       required: true,
     },

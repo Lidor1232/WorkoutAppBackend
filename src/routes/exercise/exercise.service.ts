@@ -24,40 +24,4 @@ export class ExerciseService {
     );
     return createdExercise;
   }
-
-  async addSetToDocByIdOrThrow({
-    exerciseId,
-    setId,
-  }: {
-    exerciseId: string;
-    setId: string;
-  }): Promise<void> {
-    logger.debug(
-      {
-        exerciseId,
-        setId,
-      },
-      'Adding set to exercise by id or throw',
-    );
-    const updatedResult = await ExerciseModel.updateOne(
-      {
-        _id: exerciseId,
-      },
-      {
-        $push: {
-          sets: setId,
-        },
-      },
-    );
-    if (updatedResult.nModified === 0) {
-      throw new Error('Set no added to exercise');
-    }
-    logger.info(
-      {
-        setId,
-        exerciseId,
-      },
-      'Added set to exercise by id or throw',
-    );
-  }
 }
