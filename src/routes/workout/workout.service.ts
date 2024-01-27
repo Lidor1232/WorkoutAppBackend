@@ -37,40 +37,4 @@ export class WorkoutService {
     );
     return createdWorkout;
   }
-
-  async addExerciseToWorkoutByIdOrThrow({
-    exerciseId,
-    workoutId,
-  }: {
-    workoutId: string;
-    exerciseId: string;
-  }) {
-    logger.debug(
-      {
-        exerciseId,
-        workoutId,
-      },
-      'Adding exercise to workout by id or throw',
-    );
-    const updatedResult = await WorkoutModel.updateOne(
-      {
-        _id: workoutId,
-      },
-      {
-        $push: {
-          exercises: exerciseId,
-        },
-      },
-    );
-    if (updatedResult.nModified === 0) {
-      throw new Error('Exercise not added to workout');
-    }
-    logger.info(
-      {
-        exerciseId,
-        workoutId,
-      },
-      'Added exercise to workout by id or throw',
-    );
-  }
 }
