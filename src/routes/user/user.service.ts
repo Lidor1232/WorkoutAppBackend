@@ -170,40 +170,4 @@ export class UserService {
       'Got user not exist by user name or throw',
     );
   }
-
-  async addWorkoutToDocByIdOrThrow({
-    workoutId,
-    userId,
-  }: {
-    userId: string;
-    workoutId: string;
-  }): Promise<void> {
-    logger.debug(
-      {
-        userId,
-        workoutId,
-      },
-      'Adding workout to user by id or throw',
-    );
-    const updatedResult = await UserModel.updateOne(
-      {
-        _id: userId,
-      },
-      {
-        $push: {
-          workouts: workoutId,
-        },
-      },
-    );
-    if (updatedResult.nModified === 0) {
-      throw new Error('Workout not added to user');
-    }
-    logger.info(
-      {
-        userId,
-        workoutId,
-      },
-      'Added workout to user by id or throw',
-    );
-  }
 }
