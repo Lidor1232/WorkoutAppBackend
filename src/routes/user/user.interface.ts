@@ -3,7 +3,6 @@ export interface User {
   firstName: string;
   lastName: string;
   userName: string;
-  workouts: string[];
   password: string;
   createdAt: string;
   updatedAt: string;
