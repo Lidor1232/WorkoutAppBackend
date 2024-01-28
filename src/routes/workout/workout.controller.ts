@@ -1,8 +1,10 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -44,6 +46,18 @@ export class WorkoutController {
         }),
       ),
     );
+    return new WorkoutApiResponse({
+      workout,
+    });
+  }
+
+  @Get('details/:workoutId')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthGuard)
+  async getWorkoutDetails(@Param() params: { workoutId: string }) {
+    const workout = await this.workoutService.getDocByIdOrThrow({
+      workoutId: params.workoutId,
+    });
     return new WorkoutApiResponse({
       workout,
     });
