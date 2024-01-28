@@ -1,11 +1,11 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { WorkoutService } from './workout.service';
 import { WorkoutController } from './workout.controller';
-import { UserModule } from '../user/user.module';
 import { JWTModule } from '../../utills/jwt/jwt.module';
+import { ExerciseModule } from '../exercise/exercise.module';
 
 @Module({
-  imports: [forwardRef(() => UserModule), JWTModule],
+  imports: [JWTModule, ExerciseModule],
   controllers: [WorkoutController],
   providers: [WorkoutService],
   exports: [WorkoutService],

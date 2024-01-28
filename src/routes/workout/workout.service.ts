@@ -1,12 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import logger from '../../config/logger';
 import WorkoutModel from './workout.model';
 import { CreateWorkout } from './workout.interface';
-import { UserService } from '../user/user.service';
 
 @Injectable()
 export class WorkoutService {
-  constructor(private userService: UserService) {}
+  constructor() {}
 
   async getDocsByUserId({ userId }: { userId: string }) {
     logger.debug({}, '' + 'Getting workouts');
@@ -30,12 +29,6 @@ export class WorkoutService {
       'Creating workout',
     );
     const createdWorkout = await WorkoutModel.create(workout);
-    await Promise.all([
-      this.userService.addWorkoutToDocByIdOrThrow({
-        workoutId: createdWorkout._id,
-        userId: createdWorkout.user,
-      }),
-    ]);
     logger.info(
       {
         workout,
@@ -45,39 +38,44 @@ export class WorkoutService {
     return createdWorkout;
   }
 
-  async addExerciseToWorkoutByIdOrThrow({
-    exerciseId,
-    workoutId,
-  }: {
-    workoutId: string;
-    exerciseId: string;
-  }) {
+  async getDocById({ workoutId }: { workoutId: string }) {
     logger.debug(
       {
-        exerciseId,
         workoutId,
       },
-      'Adding exercise to workout by id or throw',
+      'Getting workout by id',
     );
-    const updatedResult = await WorkoutModel.updateOne(
+    const workout = await WorkoutModel.findById(workoutId);
+    logger.info(
       {
-        _id: workoutId,
+        workoutId,
+        workout,
       },
-      {
-        $push: {
-          exercises: exerciseId,
-        },
-      },
+      'Got workout by id',
     );
-    if (updatedResult.nModified === 0) {
-      throw new Error('Exercise not added to workout');
+    return workout;
+  }
+
+  async getDocByIdOrThrow({ workoutId }: { workoutId: string }) {
+    logger.debug(
+      {
+        workoutId,
+      },
+      'Getting workout by id or throw',
+    );
+    const workout = await this.getDocById({
+      workoutId,
+    });
+    if (workout === null) {
+      throw new NotFoundException('Workout not found');
     }
     logger.info(
       {
-        exerciseId,
         workoutId,
+        workout,
       },
-      'Added exercise to workout by id or throw',
+      'Got workout by id or throw',
     );
+    return workout;
   }
 }

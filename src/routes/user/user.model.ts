@@ -21,14 +21,6 @@ const UserSchema = new Schema<User>(
       unique: true,
       min: 1,
     },
-    workouts: {
-      type: Array,
-      item: {
-        type: Schema.Types.ObjectId,
-        ref: modelNames.Workout,
-      },
-      required: true,
-    },
     password: {
       type: String,
       required: true,

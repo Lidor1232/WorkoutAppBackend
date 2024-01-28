@@ -1,8 +1,10 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -12,10 +14,14 @@ import { WorkoutApiResponse } from './responses/workout-api-response';
 import { AuthGuard } from '../../guard/auth.guard';
 import { User } from '../../decorators/user.decorator';
 import { UserTokenPayload } from '../user/user.interface';
+import { ExerciseService } from '../exercise/exercise.service';
 
 @Controller('workout')
 export class WorkoutController {
-  constructor(private workoutService: WorkoutService) {}
+  constructor(
+    private workoutService: WorkoutService,
+    private exerciseService: ExerciseService,
+  ) {}
 
   @Post('')
   @HttpCode(HttpStatus.CREATED)
@@ -29,6 +35,28 @@ export class WorkoutController {
         user: user._id,
         date: body.date,
       },
+    });
+    await Promise.all(
+      body.exercises.map((exercise) =>
+        this.exerciseService.createDoc({
+          exercise: {
+            ...exercise,
+            workout: workout._id,
+          },
+        }),
+      ),
+    );
+    return new WorkoutApiResponse({
+      workout,
+    });
+  }
+
+  @Get('details/:workoutId')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthGuard)
+  async getWorkoutDetails(@Param() params: { workoutId: string }) {
+    const workout = await this.workoutService.getDocByIdOrThrow({
+      workoutId: params.workoutId,
     });
     return new WorkoutApiResponse({
       workout,

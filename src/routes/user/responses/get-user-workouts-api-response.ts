@@ -7,7 +7,12 @@ export class GetUserWorkoutsApiResponse {
   userId: string;
 
   constructor({ userId, workouts }: { userId: string; workouts: Workout[] }) {
-    this.workouts = workouts;
+    this.workouts = workouts.map(
+      (workout) =>
+        new WorkoutApiResponse({
+          workout,
+        }),
+    );
     this.userId = userId;
   }
 }

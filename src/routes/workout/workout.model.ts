@@ -13,14 +13,6 @@ const WorkoutSchema = new Schema<Workout>(
       type: Date,
       required: true,
     },
-    exercises: {
-      type: Array,
-      item: {
-        type: Schema.Types.ObjectId,
-        ref: modelNames.Exercise,
-      },
-      required: true,
-    },
   },
   {
     timestamps: true,

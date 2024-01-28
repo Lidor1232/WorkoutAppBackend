@@ -2,11 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { CreateExercise } from './exercise.interface';
 import logger from '../../config/logger';
 import ExerciseModel from './exercise.model';
-import { WorkoutService } from '../workout/workout.service';
 
 @Injectable()
 export class ExerciseService {
-  constructor(private workoutService: WorkoutService) {}
+  constructor() {}
 
   async createDoc({ exercise }: { exercise: CreateExercise }) {
     logger.debug(
@@ -16,12 +15,6 @@ export class ExerciseService {
       'Creating exercise',
     );
     const createdExercise = await ExerciseModel.create(exercise);
-    await Promise.all([
-      this.workoutService.addExerciseToWorkoutByIdOrThrow({
-        workoutId: createdExercise.workout,
-        exerciseId: createdExercise._id,
-      }),
-    ]);
     logger.info(
       {
         exercise,
@@ -32,39 +25,23 @@ export class ExerciseService {
     return createdExercise;
   }
 
-  async addSetToDocByIdOrThrow({
-    exerciseId,
-    setId,
-  }: {
-    exerciseId: string;
-    setId: string;
-  }): Promise<void> {
+  async getDocsByWorkoutId({ workoutId }: { workoutId: string }) {
     logger.debug(
       {
-        exerciseId,
-        setId,
+        workoutId,
       },
-      'Adding set to exercise by id or throw',
+      'Getting exercises by workout id',
     );
-    const updatedResult = await ExerciseModel.updateOne(
-      {
-        _id: exerciseId,
-      },
-      {
-        $push: {
-          sets: setId,
-        },
-      },
-    );
-    if (updatedResult.nModified === 0) {
-      throw new Error('Set no added to exercise');
-    }
+    const exercises = await ExerciseModel.find({
+      workout: workoutId,
+    });
     logger.info(
       {
-        setId,
-        exerciseId,
+        workoutId,
+        exercises,
       },
-      'Added set to exercise by id or throw',
+      'Got exercises by workout id',
     );
+    return exercises;
   }
 }
