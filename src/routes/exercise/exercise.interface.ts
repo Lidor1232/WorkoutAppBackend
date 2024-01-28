@@ -1,7 +1,4 @@
-export interface Set {
-  weight: number;
-  reps: number;
-}
+import { Set } from '../set/set.interface';
 
 export interface Exercise {
   _id: string;

@@ -2,22 +2,11 @@ import {
   ArrayNotEmpty,
   IsArray,
   IsNotEmpty,
-  IsNumber,
   IsString,
-  Min,
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-
-export class CreateSet {
-  @IsNumber()
-  @Min(0)
-  weight: number;
-
-  @IsNumber()
-  @Min(0)
-  reps: number;
-}
+import { CreateSet } from '../set/set.dto';
 
 export class CreateExercise {
   @IsString()

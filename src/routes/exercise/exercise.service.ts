@@ -24,4 +24,24 @@ export class ExerciseService {
     );
     return createdExercise;
   }
+
+  async getDocsByWorkoutId({ workoutId }: { workoutId: string }) {
+    logger.debug(
+      {
+        workoutId,
+      },
+      'Getting exercises by workout id',
+    );
+    const exercises = await ExerciseModel.find({
+      workout: workoutId,
+    });
+    logger.info(
+      {
+        workoutId,
+        exercises,
+      },
+      'Got exercises by workout id',
+    );
+    return exercises;
+  }
 }
