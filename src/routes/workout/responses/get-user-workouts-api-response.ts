@@ -1,5 +1,5 @@
-import { Workout } from '../../workout/workout.interface';
-import { WorkoutApiResponse } from '../../workout/responses/workout-api-response';
+import { Workout } from '../workout.interface';
+import { WorkoutApiResponse } from './workout-api-response';
 
 export class GetUserWorkoutsApiResponse {
   workouts: WorkoutApiResponse[];

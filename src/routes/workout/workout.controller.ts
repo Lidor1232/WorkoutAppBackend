@@ -15,6 +15,7 @@ import { AuthGuard } from '../../guard/auth.guard';
 import { User } from '../../decorators/user.decorator';
 import { UserTokenPayload } from '../user/user.interface';
 import { ExerciseService } from '../exercise/exercise.service';
+import { GetUserWorkoutsApiResponse } from './responses/get-user-workouts-api-response';
 
 @Controller('workout')
 export class WorkoutController {
@@ -60,6 +61,19 @@ export class WorkoutController {
     });
     return new WorkoutApiResponse({
       workout,
+    });
+  }
+
+  @Get('user/workouts')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthGuard)
+  async getUserWorkouts(@User() user: UserTokenPayload) {
+    const workouts = await this.workoutService.getDocsByUserId({
+      userId: user._id,
+    });
+    return new GetUserWorkoutsApiResponse({
+      workouts,
+      userId: user._id,
     });
   }
 }
