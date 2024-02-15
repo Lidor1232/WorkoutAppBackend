@@ -14,7 +14,7 @@ import { UserApiResponse } from './responses/user-api-response';
 import { JWTService } from '../../utills/jwt/jwt.service';
 import { CreateUserApiResponse } from './responses/create-user-api-response';
 import { LoginUserApiResponse } from './responses/login-user-api-response';
-import { AuthGuard } from '../../guard/auth.guard';
+import { AuthGuard } from '../../guard/auth/auth.guard';
 import { User } from '../../decorators/user.decorator';
 import { UserTokenPayload } from './user.interface';
 
