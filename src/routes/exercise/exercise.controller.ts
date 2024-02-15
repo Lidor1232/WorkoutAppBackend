@@ -6,7 +6,7 @@ import {
   Param,
   UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from '../../guard/auth.guard';
+import { AuthGuard } from '../../guard/auth/auth.guard';
 import { ExerciseService } from './exercise.service';
 import { GetWorkoutExercisesApiResponse } from './responses/get-workout-exercises-api-response';
 
