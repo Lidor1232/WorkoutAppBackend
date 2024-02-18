@@ -25,13 +25,10 @@ export class UserController {
     private jwtService: JWTService,
   ) {}
 
-  @Get('/details/:userId')
+  @Get('/details')
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
-  async getUser(
-    @Param() params: { userId: string },
-    @User() reqUser: UserTokenPayload,
-  ) {
+  async getUser(@User() reqUser: UserTokenPayload) {
     const user = await this.userService.getDocByIdOrThrow({
       userId: reqUser._id,
     });
