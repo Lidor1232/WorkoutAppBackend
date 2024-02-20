@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateExercise } from './exercise.interface';
-import logger from '../../config/logger';
+import logger from '../config/logger';
 import { ExerciseDal } from './exercise.dal';
 import { Exercise } from './exercise.schema';
 

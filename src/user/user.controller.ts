@@ -10,11 +10,11 @@ import {
 import { UserService } from './user.service';
 import { CreateUser, UserLogin } from './user.dto';
 import { UserApiResponse } from './responses/user-api-response';
-import { JWTService } from '../../utills/jwt/jwt.service';
+import { JWTService } from '../utills/jwt/jwt.service';
 import { CreateUserApiResponse } from './responses/create-user-api-response';
 import { LoginUserApiResponse } from './responses/login-user-api-response';
-import { AuthGuard } from '../../guard/auth/auth.guard';
-import { User } from '../../decorators/user.decorator';
+import { AuthGuard } from '../guard/auth/auth.guard';
+import { User } from '../decorators/user.decorator';
 import { UserTokenPayload } from './user.interface';
 
 @Controller('user')

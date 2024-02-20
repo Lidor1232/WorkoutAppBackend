@@ -3,9 +3,9 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import logger from '../../config/logger';
+import logger from '../config/logger';
 import { CreateUser } from './user.dto';
-import { BcryptService } from '../../utills/bcrypt/bcrypt.service';
+import { BcryptService } from '../utills/bcrypt/bcrypt.service';
 import { UserDal } from './user.dal';
 import { User } from './user.schema';
 
