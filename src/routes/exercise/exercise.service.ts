@@ -2,24 +2,29 @@ import { Injectable } from '@nestjs/common';
 import { CreateExercise } from './exercise.interface';
 import logger from '../../config/logger';
 import { ExerciseDal } from './exercise.dal';
+import { Exercise } from './exercise.schema';
 
 @Injectable()
 export class ExerciseService {
   constructor(private exerciseDal: ExerciseDal) {}
 
-  async createDoc({ exercise }: { exercise: CreateExercise }) {
+  async create({
+    createExercise,
+  }: {
+    createExercise: CreateExercise;
+  }): Promise<Exercise> {
     logger.debug(
       {
-        exercise,
+        createExercise,
       },
       'Creating exercise',
     );
     const createdExercise = await this.exerciseDal.create({
-      createExercise: exercise,
+      createExercise,
     });
     logger.info(
       {
-        exercise,
+        createExercise,
         createdExercise,
       },
       'Created exercise',
@@ -27,7 +32,11 @@ export class ExerciseService {
     return createdExercise;
   }
 
-  async getDocsByWorkoutId({ workoutId }: { workoutId: string }) {
+  async findAllByWorkoutId({
+    workoutId,
+  }: {
+    workoutId: string;
+  }): Promise<Exercise[]> {
     logger.debug(
       {
         workoutId,

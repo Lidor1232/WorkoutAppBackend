@@ -39,8 +39,8 @@ export class WorkoutController {
     });
     await Promise.all(
       body.exercises.map((exercise) =>
-        this.exerciseService.createDoc({
-          exercise: {
+        this.exerciseService.create({
+          createExercise: {
             ...exercise,
             workoutId: workout._id,
           },

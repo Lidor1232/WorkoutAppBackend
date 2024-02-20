@@ -18,7 +18,7 @@ export class ExerciseController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
   async getWorkoutExercises(@Param() params: { workoutId: string }) {
-    const exercises = await this.exerciseService.getDocsByWorkoutId({
+    const exercises = await this.exerciseService.findAllByWorkoutId({
       workoutId: params.workoutId,
     });
     return new GetWorkoutExercisesApiResponse({
