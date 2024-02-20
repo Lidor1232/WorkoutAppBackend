@@ -10,19 +10,27 @@ export class WorkoutDal {
     @InjectModel(Workout.name) private workoutModel: Model<Workout>,
   ) {}
 
-  async findByUserId({ userId }: { userId: string }) {
+  async findAllByUserId({ userId }: { userId: string }): Promise<Workout[]> {
     const workouts = this.workoutModel.find({
       userId,
     });
     return workouts;
   }
 
-  async create({ createWorkout }: { createWorkout: CreateWorkout }) {
+  async create({
+    createWorkout,
+  }: {
+    createWorkout: CreateWorkout;
+  }): Promise<Workout> {
     const createdWorkout = await this.workoutModel.create(createWorkout);
     return createdWorkout;
   }
 
-  async findById({ workoutId }: { workoutId: string }) {
+  async findById({
+    workoutId,
+  }: {
+    workoutId: string;
+  }): Promise<Workout | null> {
     const workout = this.workoutModel.findById(workoutId);
     return workout;
   }

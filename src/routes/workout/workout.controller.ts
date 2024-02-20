@@ -31,7 +31,7 @@ export class WorkoutController {
     @Body() body: CreateWorkout,
     @User() user: UserTokenPayload,
   ) {
-    const workout = await this.workoutService.createDoc({
+    const workout = await this.workoutService.create({
       createWorkout: {
         userId: user._id,
         date: body.date,
@@ -39,8 +39,8 @@ export class WorkoutController {
     });
     await Promise.all(
       body.exercises.map((exercise) =>
-        this.exerciseService.createDoc({
-          exercise: {
+        this.exerciseService.create({
+          createExercise: {
             ...exercise,
             workoutId: workout._id,
           },
@@ -56,7 +56,7 @@ export class WorkoutController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
   async getWorkoutDetails(@Param() params: { workoutId: string }) {
-    const workout = await this.workoutService.getDocByIdOrThrow({
+    const workout = await this.workoutService.findByIdOrThrow({
       workoutId: params.workoutId,
     });
     return new WorkoutApiResponse({
@@ -68,7 +68,7 @@ export class WorkoutController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
   async getUserWorkouts(@User() user: UserTokenPayload) {
-    const workouts = await this.workoutService.getDocsByUserId({
+    const workouts = await this.workoutService.findAllByUserId({
       userId: user._id,
     });
     return new GetUserWorkoutsApiResponse({

@@ -28,7 +28,7 @@ export class UserController {
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   async getUser(@User() reqUser: UserTokenPayload) {
-    const user = await this.userService.getDocByIdOrThrow({
+    const user = await this.userService.findByIdOrThrow({
       userId: reqUser._id,
     });
     return new UserApiResponse({
@@ -39,11 +39,11 @@ export class UserController {
   @Post('/login')
   @HttpCode(HttpStatus.OK)
   async loginUser(@Body() body: UserLogin) {
-    const user = await this.userService.getDocByUserNameOrThrow({
+    const user = await this.userService.findByUserNameOrThrow({
       userName: body.userName,
     });
     await this.userService.validDocPasswordByPasswordOrThrow({
-      hash: user.password,
+      userPassword: user.password,
       password: body.password,
     });
     const userToken = this.jwtService.createUserToken({
@@ -63,8 +63,8 @@ export class UserController {
     await this.userService.docNotExistByUserNameOrThrow({
       userName: body.userName,
     });
-    const user = await this.userService.createDoc({
-      user: body,
+    const user = await this.userService.create({
+      createUser: body,
     });
     const userToken = this.jwtService.createUserToken({
       user,

@@ -7,12 +7,13 @@ import logger from '../../config/logger';
 import { CreateUser } from './user.dto';
 import { BcryptService } from '../../utills/bcrypt/bcrypt.service';
 import { UserDal } from './user.dal';
+import { User } from './user.schema';
 
 @Injectable()
 export class UserService {
   constructor(private userDal: UserDal, private bcryptService: BcryptService) {}
 
-  async getDocById({ userId }: { userId: string }) {
+  async findById({ userId }: { userId: string }): Promise<User | null> {
     logger.debug(
       {
         userId,
@@ -30,14 +31,14 @@ export class UserService {
     return user;
   }
 
-  async getDocByIdOrThrow({ userId }: { userId: string }) {
+  async findByIdOrThrow({ userId }: { userId: string }): Promise<User> {
     logger.debug(
       {
         userId,
       },
       'Getting user by id or throw',
     );
-    const user = await this.getDocById({
+    const user = await this.findById({
       userId,
     });
     if (user === null) {
@@ -53,17 +54,17 @@ export class UserService {
     return user;
   }
 
-  async createDoc({ user }: { user: CreateUser }) {
+  async create({ createUser }: { createUser: CreateUser }): Promise<User> {
     logger.debug(
       {
-        user,
+        createUser: createUser,
       },
       'Creating user',
     );
-    const createdUser = await this.userDal.create(user);
+    const createdUser = await this.userDal.create(createUser);
     logger.info(
       {
-        user,
+        createUser,
         createdUser,
       },
       'Created user',
@@ -71,7 +72,11 @@ export class UserService {
     return createdUser;
   }
 
-  async getDocByUserName({ userName }: { userName: string }) {
+  async findByUserName({
+    userName,
+  }: {
+    userName: string;
+  }): Promise<User | null> {
     logger.debug(
       {
         userName,
@@ -91,14 +96,18 @@ export class UserService {
     return user;
   }
 
-  async getDocByUserNameOrThrow({ userName }: { userName: string }) {
+  async findByUserNameOrThrow({
+    userName,
+  }: {
+    userName: string;
+  }): Promise<User> {
     logger.debug(
       {
         userName,
       },
       'Getting user by user name or throw',
     );
-    const user = await this.getDocByUserName({
+    const user = await this.findByUserName({
       userName,
     });
     if (user === null) {
@@ -116,21 +125,21 @@ export class UserService {
 
   async validDocPasswordByPasswordOrThrow({
     password,
-    hash,
+    userPassword,
   }: {
     password: string;
-    hash: string;
+    userPassword: string;
   }): Promise<void> {
     logger.debug(
       {
         password,
-        hash,
+        userPassword,
       },
       'Validating user password or throw',
     );
     const isValidPassword = await this.bcryptService.isPasswordMatchHash({
       password,
-      hash,
+      hash: userPassword,
     });
     if (!isValidPassword) {
       throw new BadRequestException('Invalid user password');
@@ -138,7 +147,7 @@ export class UserService {
     logger.info(
       {
         password,
-        hash,
+        userPassword,
         isValidPassword,
       },
       'Validated user password or throw',
@@ -156,7 +165,7 @@ export class UserService {
       },
       'getting user not exist by user name or throw',
     );
-    const user = await this.getDocByUserName({
+    const user = await this.findByUserName({
       userName,
     });
     if (user !== null) {

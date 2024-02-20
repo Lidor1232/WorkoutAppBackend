@@ -19,7 +19,11 @@ export class ExerciseDal {
     return createdExercise;
   }
 
-  async findByWorkoutId({ workoutId }: { workoutId: string }) {
+  async findByWorkoutId({
+    workoutId,
+  }: {
+    workoutId: string;
+  }): Promise<Exercise[]> {
     const exercises = await this.exerciseModel.find({
       workoutId,
     });
