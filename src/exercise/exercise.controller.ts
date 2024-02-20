@@ -14,7 +14,7 @@ import { GetWorkoutExercisesApiResponse } from './responses/get-workout-exercise
 export class ExerciseController {
   constructor(private exerciseService: ExerciseService) {}
 
-  @Get('/workout/:workoutId')
+  @Get('/workout/:workoutId/exercises')
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
   async getWorkoutExercises(@Param() params: { workoutId: string }) {

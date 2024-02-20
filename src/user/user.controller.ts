@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -16,20 +17,32 @@ import { LoginUserApiResponse } from './responses/login-user-api-response';
 import { AuthGuard } from '../common/guard/auth/auth.guard';
 import { User } from '../decorators/user.decorator';
 import { UserTokenPayload } from './user.interface';
+import { StringService } from '../utills/data-structure/string/string.service';
 
 @Controller('user')
 export class UserController {
   constructor(
     private userService: UserService,
     private jwtService: JWTService,
+    private stringService: StringService,
   ) {}
 
-  @Get('/details')
+  @Get(':userId/details')
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
-  async getUser(@User() reqUser: UserTokenPayload) {
+  async getUser(
+    @User() reqUser: UserTokenPayload,
+    @Param()
+    params: {
+      userId: string;
+    },
+  ) {
+    this.stringService.stringsEqualOrThrow({
+      string1: reqUser._id,
+      string2: params.userId,
+    });
     const user = await this.userService.findByIdOrThrow({
-      userId: reqUser._id,
+      userId: params.userId,
     });
     return new UserApiResponse({
       user,

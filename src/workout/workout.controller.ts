@@ -16,12 +16,14 @@ import { User } from '../decorators/user.decorator';
 import { UserTokenPayload } from '../user/user.interface';
 import { ExerciseService } from '../exercise/exercise.service';
 import { GetUserWorkoutsApiResponse } from './responses/get-user-workouts-api-response';
+import { StringService } from '../utills/data-structure/string/string.service';
 
 @Controller('workout')
 export class WorkoutController {
   constructor(
     private workoutService: WorkoutService,
     private exerciseService: ExerciseService,
+    private stringService: StringService,
   ) {}
 
   @Post('')
@@ -52,7 +54,7 @@ export class WorkoutController {
     });
   }
 
-  @Get('details/:workoutId')
+  @Get(':workoutId/details')
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
   async getWorkoutDetails(@Param() params: { workoutId: string }) {
@@ -64,16 +66,26 @@ export class WorkoutController {
     });
   }
 
-  @Get('user/workouts')
+  @Get('user/:userId/workouts')
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
-  async getUserWorkouts(@User() user: UserTokenPayload) {
+  async getUserWorkouts(
+    @User() user: UserTokenPayload,
+    @Param()
+    params: {
+      userId: string;
+    },
+  ) {
+    this.stringService.stringsEqualOrThrow({
+      string1: user._id,
+      string2: params.userId,
+    });
     const workouts = await this.workoutService.findAllByUserId({
-      userId: user._id,
+      userId: params.userId,
     });
     return new GetUserWorkoutsApiResponse({
       workouts,
-      userId: user._id,
+      userId: params.userId,
     });
   }
 }
