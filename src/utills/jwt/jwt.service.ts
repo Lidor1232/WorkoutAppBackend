@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserTokenPayload } from '../../user/user.interface';
 import * as jwt from 'jsonwebtoken';
 import environmentConfig from '../../config/environment.config';
-import logger from '../../config/logger';
+import logger from '../../common/logger/logger';
 
 @Injectable()
 export class JWTService {

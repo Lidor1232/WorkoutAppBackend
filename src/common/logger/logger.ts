@@ -1,6 +1,6 @@
 import pino from 'pino';
-import { context } from '../utills/async-context/async-context';
-import environmentConfig from './environment.config';
+import { context } from '../../utills/async-context/async-context';
+import environmentConfig from '../../config/environment.config';
 
 const hideLogs = true;
 

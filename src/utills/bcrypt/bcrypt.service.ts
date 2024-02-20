@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcrypt';
-import logger from '../../config/logger';
+import logger from '../../common/logger/logger';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()

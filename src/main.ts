@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import helmet from 'helmet';
-import { useLoggerRequestId } from './middlewares/request-id-middleware';
+import { useLoggerRequestId } from './common/middlewares/request-id-middleware';
 import * as cookieParser from 'cookie-parser';
 import { ValidationPipe } from '@nestjs/common';
 

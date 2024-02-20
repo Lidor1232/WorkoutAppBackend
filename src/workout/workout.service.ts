@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import logger from '../config/logger';
+import logger from '../common/logger/logger';
 import { CreateWorkout } from './workout.interface';
 import { WorkoutDal } from './workout.dal';
 import { Workout } from './workout.schema';
