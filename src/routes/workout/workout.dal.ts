@@ -12,7 +12,7 @@ export class WorkoutDal {
 
   async findByUserId({ userId }: { userId: string }) {
     const workouts = this.workoutModel.find({
-      user: userId,
+      userId,
     });
     return workouts;
   }
