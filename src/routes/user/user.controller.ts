@@ -47,7 +47,12 @@ export class UserController {
       password: body.password,
     });
     const userToken = this.jwtService.createUserToken({
-      user,
+      user: {
+        _id: user._id,
+        userName: user.userName,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      },
     });
     return new LoginUserApiResponse({ user, token: userToken });
   }

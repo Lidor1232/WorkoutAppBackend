@@ -32,8 +32,8 @@ export class WorkoutController {
     @User() user: UserTokenPayload,
   ) {
     const workout = await this.workoutService.createDoc({
-      workout: {
-        user: user._id,
+      createWorkout: {
+        userId: user._id,
         date: body.date,
       },
     });
@@ -42,7 +42,7 @@ export class WorkoutController {
         this.exerciseService.createDoc({
           exercise: {
             ...exercise,
-            workout: workout._id,
+            workoutId: workout._id,
           },
         }),
       ),

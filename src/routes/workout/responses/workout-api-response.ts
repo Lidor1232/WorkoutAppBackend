@@ -1,4 +1,4 @@
-import { Workout } from '../workout.interface';
+import { Workout } from '../workout.schema';
 
 export class WorkoutApiResponse {
   _id: string;

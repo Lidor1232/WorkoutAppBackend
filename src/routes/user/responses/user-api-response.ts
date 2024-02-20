@@ -1,4 +1,4 @@
-import { User } from '../user.interface';
+import { User } from '../user.schema';
 
 export class UserApiResponse {
   _id: string;
