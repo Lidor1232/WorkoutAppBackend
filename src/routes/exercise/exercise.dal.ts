@@ -21,7 +21,7 @@ export class ExerciseDal {
 
   async findByWorkoutId({ workoutId }: { workoutId: string }) {
     const exercises = await this.exerciseModel.find({
-      workout: workoutId,
+      workoutId,
     });
     return exercises;
   }
