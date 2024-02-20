@@ -8,21 +8,26 @@ import { Workout } from './workout.schema';
 export class WorkoutService {
   constructor(private workoutDal: WorkoutDal) {}
 
-  async getDocsByUserId({ userId }: { userId: string }): Promise<Workout[]> {
-    logger.debug({}, '' + 'Getting workouts');
-    const workouts = await this.workoutDal.findByUserId({
+  async findAllByUserId({ userId }: { userId: string }): Promise<Workout[]> {
+    logger.debug({ userId }, 'Getting workouts');
+    const workouts = await this.workoutDal.findAllByUserId({
       userId,
     });
     logger.info(
       {
         workouts,
+        userId,
       },
       'Got workouts',
     );
     return workouts;
   }
 
-  async createDoc({ createWorkout }: { createWorkout: CreateWorkout }) {
+  async create({
+    createWorkout,
+  }: {
+    createWorkout: CreateWorkout;
+  }): Promise<Workout> {
     logger.debug(
       {
         createWorkout,
@@ -42,7 +47,11 @@ export class WorkoutService {
     return createdWorkout;
   }
 
-  async getDocById({ workoutId }: { workoutId: string }) {
+  async findById({
+    workoutId,
+  }: {
+    workoutId: string;
+  }): Promise<Workout | null> {
     logger.debug(
       {
         workoutId,
@@ -62,7 +71,7 @@ export class WorkoutService {
     return workout;
   }
 
-  async getDocByIdOrThrow({
+  async findByIdOrThrow({
     workoutId,
   }: {
     workoutId: string;
@@ -73,7 +82,7 @@ export class WorkoutService {
       },
       'Getting workout by id or throw',
     );
-    const workout = await this.getDocById({
+    const workout = await this.findById({
       workoutId,
     });
     if (workout === null) {
