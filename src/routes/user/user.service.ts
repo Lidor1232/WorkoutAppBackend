@@ -3,14 +3,14 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import UserModel from './user.model';
 import logger from '../../config/logger';
 import { CreateUser } from './user.dto';
 import { BcryptService } from '../../utills/bcrypt/bcrypt.service';
+import { UserDal } from './user.dal';
 
 @Injectable()
 export class UserService {
-  constructor(private bcryptService: BcryptService) {}
+  constructor(private userDal: UserDal, private bcryptService: BcryptService) {}
 
   async getDocById({ userId }: { userId: string }) {
     logger.debug(
@@ -19,7 +19,7 @@ export class UserService {
       },
       'Getting user by id',
     );
-    const user = await UserModel.findById(userId);
+    const user = await this.userDal.findById({ userId });
     logger.info(
       {
         userId,
@@ -60,7 +60,7 @@ export class UserService {
       },
       'Creating user',
     );
-    const createdUser = await UserModel.create(user);
+    const createdUser = await this.userDal.create(user);
     logger.info(
       {
         user,
@@ -78,7 +78,7 @@ export class UserService {
       },
       'Getting user by user name',
     );
-    const user = await UserModel.findOne({
+    const user = await this.userDal.findByUserName({
       userName,
     });
     logger.info(

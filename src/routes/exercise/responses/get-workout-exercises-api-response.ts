@@ -1,5 +1,5 @@
 import { ExerciseApiResponse } from './exercise-api-response';
-import { Exercise } from '../exercise.interface';
+import { Exercise } from '../exercise.schema';
 
 export class GetWorkoutExercisesApiResponse {
   workoutId: string;

@@ -1,4 +1,4 @@
-import { Set } from '../set.interface';
+import { Set } from '../exercise.schema';
 
 export class SetApiResponse {
   weight: number;

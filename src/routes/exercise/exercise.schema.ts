@@ -1,10 +1,28 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Set } from '../set/set.schema';
 
 export type ExerciseDocument = Exercise & Document;
 
 @Schema()
+export class Set {
+  @Prop({
+    type: Number,
+    required: true,
+  })
+  weight: number;
+
+  @Prop({
+    type: Number,
+    required: true,
+  })
+  reps: number;
+}
+
+@Schema({
+  timestamps: true,
+})
 export class Exercise {
+  _id: string;
+
   @Prop({
     type: String,
     required: true,

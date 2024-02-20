@@ -1,5 +1,5 @@
 import { UserApiResponse } from './user-api-response';
-import { User } from '../user.interface';
+import { User } from '../user.schema';
 
 export class CreateUserApiResponse {
   user: UserApiResponse;

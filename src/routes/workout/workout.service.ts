@@ -1,16 +1,17 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import logger from '../../config/logger';
-import WorkoutModel from './workout.model';
 import { CreateWorkout } from './workout.interface';
+import { WorkoutDal } from './workout.dal';
+import { Workout } from './workout.schema';
 
 @Injectable()
 export class WorkoutService {
-  constructor() {}
+  constructor(private workoutDal: WorkoutDal) {}
 
-  async getDocsByUserId({ userId }: { userId: string }) {
+  async getDocsByUserId({ userId }: { userId: string }): Promise<Workout[]> {
     logger.debug({}, '' + 'Getting workouts');
-    const workouts = await WorkoutModel.find({
-      user: userId,
+    const workouts = await this.workoutDal.findByUserId({
+      userId,
     });
     logger.info(
       {
@@ -21,17 +22,20 @@ export class WorkoutService {
     return workouts;
   }
 
-  async createDoc({ workout }: { workout: CreateWorkout }) {
+  async createDoc({ createWorkout }: { createWorkout: CreateWorkout }) {
     logger.debug(
       {
-        workout,
+        createWorkout,
       },
       'Creating workout',
     );
-    const createdWorkout = await WorkoutModel.create(workout);
+    const createdWorkout = await this.workoutDal.create({
+      createWorkout,
+    });
     logger.info(
       {
-        workout,
+        createWorkout,
+        createdWorkout,
       },
       'Created workout',
     );
@@ -45,7 +49,9 @@ export class WorkoutService {
       },
       'Getting workout by id',
     );
-    const workout = await WorkoutModel.findById(workoutId);
+    const workout = await this.workoutDal.findById({
+      workoutId,
+    });
     logger.info(
       {
         workoutId,
@@ -56,7 +62,11 @@ export class WorkoutService {
     return workout;
   }
 
-  async getDocByIdOrThrow({ workoutId }: { workoutId: string }) {
+  async getDocByIdOrThrow({
+    workoutId,
+  }: {
+    workoutId: string;
+  }): Promise<Workout> {
     logger.debug(
       {
         workoutId,

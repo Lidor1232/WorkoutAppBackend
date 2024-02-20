@@ -1,14 +1,10 @@
-import { Set } from '../set/set.interface';
-
-export interface Exercise {
-  _id: string;
-  name: string;
-  workout: string;
-  sets: Set[];
+export interface CreateSet {
+  reps: number;
+  weight: number;
 }
 
 export interface CreateExercise {
   name: string;
   workout: string;
-  sets: Set[];
+  sets: CreateSet[];
 }

@@ -1,5 +1,5 @@
-import { SetApiResponse } from '../../set/responses/set-api-response';
-import { Exercise } from '../exercise.interface';
+import { Exercise } from '../exercise.schema';
+import { SetApiResponse } from './set-api-response';
 
 export class ExerciseApiResponse {
   _id: string;
@@ -19,6 +19,6 @@ export class ExerciseApiResponse {
           set,
         }),
     );
-    this.workout = exercise.workout;
+    this.workout = exercise.workoutId;
   }
 }
