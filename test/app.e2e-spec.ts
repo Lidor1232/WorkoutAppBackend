@@ -21,4 +21,8 @@ describe('AppController (e2e)', () => {
       statusCode: 200,
     });
   });
+
+  afterAll(async () => {
+    await app.close();
+  });
 });
