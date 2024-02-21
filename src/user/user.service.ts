@@ -3,25 +3,29 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import logger from '../common/logger/logger';
 import { CreateUser } from './user.dto';
 import { BcryptService } from '../utills/bcrypt/bcrypt.service';
 import { UserDal } from './user.dal';
 import { User } from './user.schema';
+import { LoggerService } from '../common/logger/logger.service';
 
 @Injectable()
 export class UserService {
-  constructor(private userDal: UserDal, private bcryptService: BcryptService) {}
+  constructor(
+    private userDal: UserDal,
+    private bcryptService: BcryptService,
+    private loggerService: LoggerService,
+  ) {}
 
   async findById({ userId }: { userId: string }): Promise<User | null> {
-    logger.debug(
+    this.loggerService.logger.debug(
       {
         userId,
       },
       'Getting user by id',
     );
     const user = await this.userDal.findById({ userId });
-    logger.info(
+    this.loggerService.logger.info(
       {
         userId,
         user,
@@ -32,7 +36,7 @@ export class UserService {
   }
 
   async findByIdOrThrow({ userId }: { userId: string }): Promise<User> {
-    logger.debug(
+    this.loggerService.logger.debug(
       {
         userId,
       },
@@ -44,7 +48,7 @@ export class UserService {
     if (user === null) {
       throw new NotFoundException('User not found');
     }
-    logger.info(
+    this.loggerService.logger.info(
       {
         userId,
         user,
@@ -55,14 +59,14 @@ export class UserService {
   }
 
   async create({ createUser }: { createUser: CreateUser }): Promise<User> {
-    logger.debug(
+    this.loggerService.logger.debug(
       {
         createUser: createUser,
       },
       'Creating user',
     );
     const createdUser = await this.userDal.create(createUser);
-    logger.info(
+    this.loggerService.logger.info(
       {
         createUser,
         createdUser,
@@ -77,7 +81,7 @@ export class UserService {
   }: {
     userName: string;
   }): Promise<User | null> {
-    logger.debug(
+    this.loggerService.logger.debug(
       {
         userName,
       },
@@ -86,7 +90,7 @@ export class UserService {
     const user = await this.userDal.findByUserName({
       userName,
     });
-    logger.info(
+    this.loggerService.logger.info(
       {
         userName,
         user,
@@ -101,7 +105,7 @@ export class UserService {
   }: {
     userName: string;
   }): Promise<User> {
-    logger.debug(
+    this.loggerService.logger.debug(
       {
         userName,
       },
@@ -113,7 +117,7 @@ export class UserService {
     if (user === null) {
       throw new NotFoundException('User not found');
     }
-    logger.info(
+    this.loggerService.logger.info(
       {
         userName,
         user,
@@ -130,7 +134,7 @@ export class UserService {
     password: string;
     userPassword: string;
   }): Promise<void> {
-    logger.debug(
+    this.loggerService.logger.debug(
       {
         password,
         userPassword,
@@ -144,7 +148,7 @@ export class UserService {
     if (!isValidPassword) {
       throw new BadRequestException('Invalid user password');
     }
-    logger.info(
+    this.loggerService.logger.info(
       {
         password,
         userPassword,
@@ -159,7 +163,7 @@ export class UserService {
   }: {
     userName: string;
   }): Promise<void> {
-    logger.debug(
+    this.loggerService.logger.debug(
       {
         userName,
       },
@@ -171,7 +175,7 @@ export class UserService {
     if (user !== null) {
       throw new BadRequestException('User exist with this user name');
     }
-    logger.info(
+    this.loggerService.logger.info(
       {
         userName,
         user,

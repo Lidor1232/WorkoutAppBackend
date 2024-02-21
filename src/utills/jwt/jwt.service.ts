@@ -1,21 +1,28 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserTokenPayload } from '../../user/user.interface';
 import * as jwt from 'jsonwebtoken';
-import environmentConfig from '../../config/environment.config';
-import logger from '../../common/logger/logger';
+import { ConfigType } from '@nestjs/config';
+import { environmentConfig } from '../../config/environment.config';
+import { LoggerService } from '../../common/logger/logger.service';
 
 @Injectable()
 export class JWTService {
+  constructor(
+    @Inject(environmentConfig.KEY)
+    private envConfig: ConfigType<typeof environmentConfig>,
+    private loggerService: LoggerService,
+  ) {}
+
   createUserToken({ user }: { user: UserTokenPayload }): string {
-    logger.debug(
+    this.loggerService.logger.debug(
       {
         user,
       },
       'Creating user token',
     );
     const userTokenPayload = JSON.parse(JSON.stringify(user));
-    const token = jwt.sign(userTokenPayload, environmentConfig.jwtSecret);
-    logger.info(
+    const token = jwt.sign(userTokenPayload, this.envConfig.jwtSecret);
+    this.loggerService.logger.info(
       {
         user,
         token,
@@ -27,10 +34,23 @@ export class JWTService {
 
   verifyUserToken({ token }: { token: string }): UserTokenPayload | null {
     try {
+      this.loggerService.logger.debug(
+        {
+          token,
+        },
+        'Verifying user token',
+      );
       const decoded = jwt.verify(
         token,
-        environmentConfig.jwtSecret,
+        this.envConfig.jwtSecret,
       ) as UserTokenPayload;
+      this.loggerService.logger.debug(
+        {
+          token,
+          decoded,
+        },
+        'Verified user token',
+      );
       return decoded;
     } catch {
       return null;

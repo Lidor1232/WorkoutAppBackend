@@ -1,19 +1,22 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import logger from '../common/logger/logger';
 import { CreateWorkout } from './workout.interface';
 import { WorkoutDal } from './workout.dal';
 import { Workout } from './workout.schema';
+import { LoggerService } from '../common/logger/logger.service';
 
 @Injectable()
 export class WorkoutService {
-  constructor(private workoutDal: WorkoutDal) {}
+  constructor(
+    private workoutDal: WorkoutDal,
+    private loggerService: LoggerService,
+  ) {}
 
   async findAllByUserId({ userId }: { userId: string }): Promise<Workout[]> {
-    logger.debug({ userId }, 'Getting workouts');
+    this.loggerService.logger.debug({ userId }, 'Getting workouts');
     const workouts = await this.workoutDal.findAllByUserId({
       userId,
     });
-    logger.info(
+    this.loggerService.logger.info(
       {
         workouts,
         userId,
@@ -28,7 +31,7 @@ export class WorkoutService {
   }: {
     createWorkout: CreateWorkout;
   }): Promise<Workout> {
-    logger.debug(
+    this.loggerService.logger.debug(
       {
         createWorkout,
       },
@@ -37,7 +40,7 @@ export class WorkoutService {
     const createdWorkout = await this.workoutDal.create({
       createWorkout,
     });
-    logger.info(
+    this.loggerService.logger.info(
       {
         createWorkout,
         createdWorkout,
@@ -52,7 +55,7 @@ export class WorkoutService {
   }: {
     workoutId: string;
   }): Promise<Workout | null> {
-    logger.debug(
+    this.loggerService.logger.debug(
       {
         workoutId,
       },
@@ -61,7 +64,7 @@ export class WorkoutService {
     const workout = await this.workoutDal.findById({
       workoutId,
     });
-    logger.info(
+    this.loggerService.logger.info(
       {
         workoutId,
         workout,
@@ -76,7 +79,7 @@ export class WorkoutService {
   }: {
     workoutId: string;
   }): Promise<Workout> {
-    logger.debug(
+    this.loggerService.logger.debug(
       {
         workoutId,
       },
@@ -88,7 +91,7 @@ export class WorkoutService {
     if (workout === null) {
       throw new NotFoundException('Workout not found');
     }
-    logger.info(
+    this.loggerService.logger.info(
       {
         workoutId,
         workout,
