@@ -1,7 +1,7 @@
 import { Test } from '@nestjs/testing';
 import { BcryptService } from './bcrypt.service';
 import { LoggerService } from '../../common/logger/logger.service';
-import { ConfigType } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { environmentConfig } from '../../config/environment.config';
 
 describe('BcryptService', function () {
@@ -9,14 +9,13 @@ describe('BcryptService', function () {
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
-      providers: [
-        BcryptService,
-        LoggerService,
-        {
-          provide: environmentConfig.KEY,
-          useValue: {} as ConfigType<typeof environmentConfig>,
-        },
+      imports: [
+        ConfigModule.forRoot({
+          envFilePath: '.env',
+          load: [environmentConfig],
+        }),
       ],
+      providers: [BcryptService, LoggerService],
     }).compile();
 
     bcryptService = module.get<BcryptService>(BcryptService);
