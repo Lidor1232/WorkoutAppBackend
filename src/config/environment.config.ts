@@ -1,15 +1,14 @@
-const dotenv = require('dotenv');
+import { registerAs } from '@nestjs/config';
 
-const envPath = '.env';
+const { NODE_ENV, PORT, DATABASE, JWT_SECRET, ENABLE_LOGS } = process.env;
 
-dotenv.config({ path: envPath });
-
-const environmentConfig = {
-  serviceName: 'army-workout-api',
-  nodeEnv: process.env.NODE_ENV ?? 'development',
-  port: process.env.PORT ?? 3000,
-  database: process.env.DATABASE as string,
-  jwtSecret: process.env.JWT_SECRET as string,
-};
-
-export default environmentConfig;
+export const environmentConfig = registerAs('env', function () {
+  return {
+    serviceName: 'army-workout-api',
+    nodeEnv: NODE_ENV,
+    port: PORT,
+    database: DATABASE,
+    jwtSecret: JWT_SECRET,
+    enableLogs: ENABLE_LOGS,
+  };
+});

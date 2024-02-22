@@ -6,7 +6,7 @@ import {
   Param,
   UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from '../../guard/auth/auth.guard';
+import { AuthGuard } from '../common/guard/auth/auth.guard';
 import { ExerciseService } from './exercise.service';
 import { GetWorkoutExercisesApiResponse } from './responses/get-workout-exercises-api-response';
 
@@ -14,7 +14,7 @@ import { GetWorkoutExercisesApiResponse } from './responses/get-workout-exercise
 export class ExerciseController {
   constructor(private exerciseService: ExerciseService) {}
 
-  @Get('/workout/:workoutId')
+  @Get('/workout/:workoutId/exercises')
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
   async getWorkoutExercises(@Param() params: { workoutId: string }) {

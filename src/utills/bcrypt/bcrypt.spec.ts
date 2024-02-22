@@ -1,12 +1,21 @@
 import { Test } from '@nestjs/testing';
 import { BcryptService } from './bcrypt.service';
+import { LoggerService } from '../../common/logger/logger.service';
+import { ConfigModule } from '@nestjs/config';
+import { environmentConfig } from '../../config/environment.config';
 
-describe('BcryptService', () => {
+describe('BcryptService', function () {
   let bcryptService;
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
-      providers: [BcryptService],
+      imports: [
+        ConfigModule.forRoot({
+          envFilePath: '.env',
+          load: [environmentConfig],
+        }),
+      ],
+      providers: [BcryptService, LoggerService],
     }).compile();
 
     bcryptService = module.get<BcryptService>(BcryptService);
@@ -16,21 +25,21 @@ describe('BcryptService', () => {
     jest.clearAllMocks();
   });
 
-  it('should return true if the password matches the hash', async () => {
-    await expect(
-      bcryptService.isPasswordMatchHash({
+  describe('isPasswordMatchHash', function () {
+    it('', async function () {
+      const payload = await bcryptService.isPasswordMatchHash({
         password: 'lidor123',
         hash: '$2a$10$Ph2LQ0YOoL3oDF0c3CjBZemj162jggRkzBxNJGp.emWi6aP/82ste',
-      }),
-    ).resolves.toBe(true);
-  });
+      });
+      expect(payload).toBe(true);
+    });
 
-  it('should return false if the password does not match the hash', async () => {
-    await expect(
-      bcryptService.isPasswordMatchHash({
+    it('', async function () {
+      const payload = await bcryptService.isPasswordMatchHash({
         password: 'lidor1',
         hash: '$2a$10$Ph2LQ0YOoL3oDF0c3CjBZemj162jggRkzBxNJGp.emWi6aP/82ste',
-      }),
-    ).resolves.toBe(false);
+      });
+      expect(payload).toBe(false);
+    });
   });
 });
