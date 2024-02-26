@@ -27,7 +27,6 @@ export class User {
     type: String,
     required: true,
     min: 1,
-    unique: true,
   })
   userName: string;
 
