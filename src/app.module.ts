@@ -32,11 +32,6 @@ import { JWTModule } from './common/jwt/jwt.module';
     JWTModule,
   ],
   controllers: [AppController],
-  providers: [
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
-  ],
+  providers: [],
 })
 export class AppModule {}
