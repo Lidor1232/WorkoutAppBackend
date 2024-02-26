@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreateUser } from './user.dto';
-import { BcryptService } from '../utills/bcrypt/bcrypt.service';
+import { HashService } from '../utills/hash/hash.service';
 import { UserDal } from './user.dal';
 import { User } from './user.schema';
 import { LoggerService } from '../common/logger/logger.service';
@@ -13,7 +13,7 @@ import { LoggerService } from '../common/logger/logger.service';
 export class UserService {
   constructor(
     private userDal: UserDal,
-    private bcryptService: BcryptService,
+    private hashService: HashService,
     private loggerService: LoggerService,
   ) {}
 
@@ -141,9 +141,9 @@ export class UserService {
       },
       'Validating user password or throw',
     );
-    const isValidPassword = await this.bcryptService.isPasswordMatchHash({
-      password,
-      hash: userPassword,
+    const isValidPassword = await this.hashService.compare({
+      data: password,
+      encrypted: userPassword,
     });
     if (!isValidPassword) {
       throw new BadRequestException('Invalid user password');
