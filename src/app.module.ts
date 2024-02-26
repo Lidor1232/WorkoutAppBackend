@@ -8,6 +8,9 @@ import { WorkoutModule } from './workout/workout.module';
 import { ExerciseModule } from './exercise/exercise.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModuleFactoryOptions } from '@nestjs/mongoose/dist/interfaces/mongoose-options.interface';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './common/guard/auth/auth.guard';
+import { JWTModule } from './common/jwt/jwt.module';
 
 @Module({
   imports: [
@@ -27,8 +30,15 @@ import { MongooseModuleFactoryOptions } from '@nestjs/mongoose/dist/interfaces/m
     UserModule,
     WorkoutModule,
     ExerciseModule,
+    JWTModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
 })
 export class AppModule {}
