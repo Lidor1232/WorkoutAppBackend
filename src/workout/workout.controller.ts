@@ -26,7 +26,7 @@ export class WorkoutController {
     private stringService: StringService,
   ) {}
 
-  @Post('')
+  @Post('/')
   @HttpCode(HttpStatus.CREATED)
   @UseGuards(AuthGuard)
   async createWorkout(
@@ -54,7 +54,7 @@ export class WorkoutController {
     });
   }
 
-  @Get(':workoutId/details')
+  @Get('/:workoutId/details')
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
   async getWorkoutDetails(@Param() params: { workoutId: string }) {
@@ -66,7 +66,7 @@ export class WorkoutController {
     });
   }
 
-  @Get('user/:userId/workouts')
+  @Get('/user/:userId/workouts')
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
   async getUserWorkouts(
