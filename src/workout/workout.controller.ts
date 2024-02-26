@@ -7,12 +7,12 @@ import {
   Param,
   Post,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { WorkoutService } from './workout.service';
 import { CreateWorkout } from './workout.dto';
 import { WorkoutApiResponse } from './responses/workout-api-response';
 import { AuthGuard } from '../common/guard/auth/auth.guard';
-import { User } from '../decorators/user.decorator';
 import { UserTokenPayload } from '../user/user.interface';
 import { ExerciseService } from '../exercise/exercise.service';
 import { GetUserWorkoutsApiResponse } from './responses/get-user-workouts-api-response';
@@ -29,11 +29,14 @@ export class WorkoutController {
   @UseGuards(AuthGuard)
   async createWorkout(
     @Body() body: CreateWorkout,
-    @User() user: UserTokenPayload,
+    @Request()
+    req: {
+      user: UserTokenPayload;
+    },
   ) {
     const workout = await this.workoutService.create({
       createWorkout: {
-        userId: user._id,
+        userId: req.user._id,
         date: body.date,
       },
     });
@@ -67,13 +70,18 @@ export class WorkoutController {
   @Get('/user/:userId/workouts')
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
-  async getUserWorkouts(@User() user: UserTokenPayload) {
+  async getUserWorkouts(
+    @Request()
+    req: {
+      user: UserTokenPayload;
+    },
+  ) {
     const workouts = await this.workoutService.findAllByUserId({
-      userId: user._id,
+      userId: req.user._id,
     });
     return new GetUserWorkoutsApiResponse({
       workouts,
-      userId: user._id,
+      userId: req.user._id,
     });
   }
 }

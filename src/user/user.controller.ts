@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Post,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUser, UserLogin } from './user.dto';
@@ -14,7 +15,6 @@ import { JWTService } from '../common/jwt/jwt.service';
 import { CreateUserApiResponse } from './responses/create-user-api-response';
 import { LoginUserApiResponse } from './responses/login-user-api-response';
 import { AuthGuard } from '../common/guard/auth/auth.guard';
-import { User } from '../decorators/user.decorator';
 import { UserTokenPayload } from './user.interface';
 
 @Controller('user')
@@ -27,9 +27,14 @@ export class UserController {
   @Get('/:userId/details')
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
-  async getUser(@User() reqUser: UserTokenPayload) {
+  async getUser(
+    @Request()
+    req: {
+      user: UserTokenPayload;
+    },
+  ) {
     const user = await this.userService.findByIdOrThrow({
-      userId: reqUser._id,
+      userId: req.user._id,
     });
     return new UserApiResponse({
       user,
