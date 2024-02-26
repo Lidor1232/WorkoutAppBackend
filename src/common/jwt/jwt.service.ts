@@ -1,20 +1,24 @@
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UserTokenPayload } from '../../user/user.interface';
 import * as jwt from 'jsonwebtoken';
 import { ConfigType } from '@nestjs/config';
 import { environmentConfig } from '../../config/environment.config';
-import { LoggerService } from '../../common/logger/logger.service';
 
 @Injectable()
 export class JWTService {
   constructor(
     @Inject(environmentConfig.KEY)
     private envConfig: ConfigType<typeof environmentConfig>,
-    private loggerService: LoggerService,
   ) {}
+  private readonly logger = new Logger();
 
   createUserToken({ user }: { user: UserTokenPayload }): string {
-    this.loggerService.logger.debug(
+    this.logger.debug(
       {
         user,
       },
@@ -22,7 +26,7 @@ export class JWTService {
     );
     const userTokenPayload = JSON.parse(JSON.stringify(user));
     const token = jwt.sign(userTokenPayload, this.envConfig.jwtSecret);
-    this.loggerService.logger.info(
+    this.logger.log(
       {
         user,
         token,
@@ -34,7 +38,7 @@ export class JWTService {
 
   verifyUserToken({ token }: { token: string }): UserTokenPayload | null {
     try {
-      this.loggerService.logger.debug(
+      this.logger.debug(
         {
           token,
         },
@@ -44,7 +48,7 @@ export class JWTService {
         token,
         this.envConfig.jwtSecret,
       ) as UserTokenPayload;
-      this.loggerService.logger.debug(
+      this.logger.log(
         {
           token,
           decoded,
@@ -58,16 +62,32 @@ export class JWTService {
   }
 
   verifyUserTokenOrThrow({ token }: { token: string }): UserTokenPayload {
+    this.logger.debug(
+      {
+        token,
+      },
+      'Verifying user token or throw',
+    );
     const decodedTokenPayload = this.verifyUserToken({
       token,
     });
     if (decodedTokenPayload === null) {
       throw new UnauthorizedException();
     }
+    this.logger.log(
+      { token, decodedTokenPayload },
+      'Verified user token or throw',
+    );
     return decodedTokenPayload;
   }
 
   extractJwtFromAuthorizationHeader(authorizationHeader?: string) {
+    this.logger.debug(
+      {
+        authorizationHeader,
+      },
+      'extracting jwt from authorization header',
+    );
     if (!authorizationHeader) {
       throw new UnauthorizedException('Authorization header is empty');
     }
@@ -77,6 +97,13 @@ export class JWTService {
       );
     }
     const token = authorizationHeader.replace('Bearer ', '');
+    this.logger.log(
+      {
+        authorizationHeader,
+        token,
+      },
+      'extracted jwt from authorization header',
+    );
     return token;
   }
 }

@@ -1,10 +1,10 @@
 import * as bcrypt from 'bcrypt';
-import { Injectable } from '@nestjs/common';
-import { LoggerService } from '../../common/logger/logger.service';
+import { Injectable, Logger } from '@nestjs/common';
 
 @Injectable()
 export class HashService {
-  constructor(private loggerService: LoggerService) {}
+  constructor() {}
+  private readonly logger = new Logger();
 
   async compare({
     data,
@@ -13,7 +13,7 @@ export class HashService {
     data: string;
     encrypted: string;
   }): Promise<boolean> {
-    this.loggerService.logger.debug(
+    this.logger.debug(
       {
         data,
         encrypted,
@@ -21,7 +21,7 @@ export class HashService {
       'Getting is data match encrypted',
     );
     const isValidData = await bcrypt.compare(data, encrypted);
-    this.loggerService.logger.info(
+    this.logger.log(
       {
         data,
         encrypted,

@@ -1,5 +1,4 @@
 import { Test } from '@nestjs/testing';
-import { LoggerService } from '../../common/logger/logger.service';
 import { ConfigModule } from '@nestjs/config';
 import { environmentConfig } from '../../config/environment.config';
 import { JWTService } from './jwt.service';
@@ -16,7 +15,7 @@ describe('JWTService', function () {
           load: [environmentConfig],
         }),
       ],
-      providers: [JWTService, LoggerService],
+      providers: [JWTService],
     }).compile();
 
     jwtService = module.get<JWTService>(JWTService);

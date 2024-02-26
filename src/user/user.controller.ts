@@ -10,7 +10,7 @@ import {
 import { UserService } from './user.service';
 import { CreateUser, UserLogin } from './user.dto';
 import { UserApiResponse } from './responses/user-api-response';
-import { JWTService } from '../utills/jwt/jwt.service';
+import { JWTService } from '../common/jwt/jwt.service';
 import { CreateUserApiResponse } from './responses/create-user-api-response';
 import { LoginUserApiResponse } from './responses/login-user-api-response';
 import { AuthGuard } from '../common/guard/auth/auth.guard';

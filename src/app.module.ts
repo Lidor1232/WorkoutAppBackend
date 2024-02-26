@@ -8,7 +8,6 @@ import { WorkoutModule } from './workout/workout.module';
 import { ExerciseModule } from './exercise/exercise.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModuleFactoryOptions } from '@nestjs/mongoose/dist/interfaces/mongoose-options.interface';
-import { LoggerModule } from './common/logger/logger.module';
 
 @Module({
   imports: [
@@ -28,7 +27,6 @@ import { LoggerModule } from './common/logger/logger.module';
     UserModule,
     WorkoutModule,
     ExerciseModule,
-    LoggerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
