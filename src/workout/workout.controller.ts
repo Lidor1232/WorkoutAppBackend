@@ -16,14 +16,12 @@ import { User } from '../decorators/user.decorator';
 import { UserTokenPayload } from '../user/user.interface';
 import { ExerciseService } from '../exercise/exercise.service';
 import { GetUserWorkoutsApiResponse } from './responses/get-user-workouts-api-response';
-import { StringService } from '../utills/data-structure/string/string.service';
 
 @Controller('workout')
 export class WorkoutController {
   constructor(
     private workoutService: WorkoutService,
     private exerciseService: ExerciseService,
-    private stringService: StringService,
   ) {}
 
   @Post('/')
@@ -69,23 +67,13 @@ export class WorkoutController {
   @Get('/user/:userId/workouts')
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
-  async getUserWorkouts(
-    @User() user: UserTokenPayload,
-    @Param()
-    params: {
-      userId: string;
-    },
-  ) {
-    this.stringService.stringsEqualOrThrow({
-      string1: user._id,
-      string2: params.userId,
-    });
+  async getUserWorkouts(@User() user: UserTokenPayload) {
     const workouts = await this.workoutService.findAllByUserId({
-      userId: params.userId,
+      userId: user._id,
     });
     return new GetUserWorkoutsApiResponse({
       workouts,
-      userId: params.userId,
+      userId: user._id,
     });
   }
 }

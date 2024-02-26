@@ -6,7 +6,6 @@ import { JWTModule } from '../utills/jwt/jwt.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './user.schema';
 import { UserDal } from './user.dal';
-import { StringModule } from '../utills/data-structure/string/string.module';
 
 @Module({
   imports: [
@@ -18,7 +17,6 @@ import { StringModule } from '../utills/data-structure/string/string.module';
         schema: UserSchema,
       },
     ]),
-    StringModule,
   ],
   controllers: [UserController],
   providers: [UserService, UserDal],

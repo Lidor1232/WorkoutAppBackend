@@ -6,7 +6,6 @@ import { ExerciseModule } from '../exercise/exercise.module';
 import { WorkoutDal } from './workout.dal';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Workout, WorkoutSchema } from './workout.schema';
-import { StringModule } from '../utills/data-structure/string/string.module';
 
 @Module({
   imports: [
@@ -18,7 +17,6 @@ import { StringModule } from '../utills/data-structure/string/string.module';
         schema: WorkoutSchema,
       },
     ]),
-    StringModule,
   ],
   controllers: [WorkoutController],
   providers: [WorkoutService, WorkoutDal],
