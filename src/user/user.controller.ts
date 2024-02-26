@@ -27,7 +27,7 @@ export class UserController {
     private stringService: StringService,
   ) {}
 
-  @Get(':userId/details')
+  @Get('/:userId/details')
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   async getUser(
