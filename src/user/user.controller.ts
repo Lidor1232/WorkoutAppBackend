@@ -24,7 +24,7 @@ export class UserController {
     private jwtService: JWTService,
   ) {}
 
-  @Get('/:userId/details')
+  @Get('/details')
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   async getUser(
