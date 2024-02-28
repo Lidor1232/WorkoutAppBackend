@@ -1,13 +1,13 @@
-import {
-  BadRequestException,
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { CreateUser } from './user.dto';
 import { HashService } from '../common/hash/hash.service';
 import { UserDal } from './user.dal';
 import { User } from './user.schema';
+import {
+  InvalidUserPassword,
+  UserAlreadyExist,
+  UserNotFound,
+} from './user.interface';
 
 @Injectable()
 export class UserService {
@@ -43,7 +43,7 @@ export class UserService {
       userId,
     });
     if (user === null) {
-      throw new NotFoundException('User not found');
+      throw new UserNotFound();
     }
     this.logger.log(
       {
@@ -112,7 +112,7 @@ export class UserService {
       userName,
     });
     if (user === null) {
-      throw new NotFoundException('User not found');
+      throw new UserNotFound();
     }
     this.logger.log(
       {
@@ -143,7 +143,7 @@ export class UserService {
       encrypted: userPassword,
     });
     if (!isValidPassword) {
-      throw new BadRequestException('Invalid user password');
+      throw new InvalidUserPassword();
     }
     this.logger.log(
       {
@@ -170,7 +170,7 @@ export class UserService {
       userName,
     });
     if (user !== null) {
-      throw new BadRequestException('User exist with this user name');
+      throw new UserAlreadyExist();
     }
     this.logger.log(
       {
