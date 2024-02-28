@@ -14,14 +14,14 @@ export class UserService {
   constructor(private userDal: UserDal, private hashService: HashService) {}
   private readonly logger = new Logger();
 
-  async findById({ userId }: { userId: string }): Promise<User | null> {
+  async getById({ userId }: { userId: string }): Promise<User | null> {
     this.logger.debug(
       {
         userId,
       },
       'Getting user by id',
     );
-    const user = await this.userDal.findById({ userId });
+    const user = await this.userDal.getById({ userId });
     this.logger.log(
       {
         userId,
@@ -32,14 +32,14 @@ export class UserService {
     return user;
   }
 
-  async findByIdOrThrow({ userId }: { userId: string }): Promise<User> {
+  async getByIdOrThrow({ userId }: { userId: string }): Promise<User> {
     this.logger.debug(
       {
         userId,
       },
       'Getting user by id or throw',
     );
-    const user = await this.findById({
+    const user = await this.getById({
       userId,
     });
     if (user === null) {
@@ -73,7 +73,7 @@ export class UserService {
     return createdUser;
   }
 
-  async findByUserName({
+  async getByUserName({
     userName,
   }: {
     userName: string;
@@ -84,7 +84,7 @@ export class UserService {
       },
       'Getting user by user name',
     );
-    const user = await this.userDal.findByUserName({
+    const user = await this.userDal.getByUserName({
       userName,
     });
     this.logger.log(
@@ -97,7 +97,7 @@ export class UserService {
     return user;
   }
 
-  async findByUserNameOrThrow({
+  async getByUserNameOrThrow({
     userName,
   }: {
     userName: string;
@@ -108,7 +108,7 @@ export class UserService {
       },
       'Getting user by user name or throw',
     );
-    const user = await this.findByUserName({
+    const user = await this.getByUserName({
       userName,
     });
     if (user === null) {
@@ -166,7 +166,7 @@ export class UserService {
       },
       'getting user not exist by user name or throw',
     );
-    const user = await this.findByUserName({
+    const user = await this.getByUserName({
       userName,
     });
     if (user !== null) {

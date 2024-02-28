@@ -41,7 +41,7 @@ export class UserController {
     },
   ) {
     try {
-      const user = await this.userService.findByIdOrThrow({
+      const user = await this.userService.getByIdOrThrow({
         userId: req.user._id,
       });
       return new UserApiResponse({
@@ -58,7 +58,7 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   async loginUser(@Body() body: UserLogin) {
     try {
-      const user = await this.userService.findByUserNameOrThrow({
+      const user = await this.userService.getByUserNameOrThrow({
         userName: body.userName,
       });
       await this.userService.validDocPasswordByPasswordOrThrow({

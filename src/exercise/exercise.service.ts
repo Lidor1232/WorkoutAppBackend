@@ -32,7 +32,7 @@ export class ExerciseService {
     return createdExercise;
   }
 
-  async findAllByWorkoutId({
+  async getAllByWorkoutId({
     workoutId,
   }: {
     workoutId: string;
@@ -43,7 +43,7 @@ export class ExerciseService {
       },
       'Getting exercises by workout id',
     );
-    const exercises = await this.exerciseDal.findByWorkoutId({
+    const exercises = await this.exerciseDal.getByWorkoutId({
       workoutId,
     });
     this.logger.log(

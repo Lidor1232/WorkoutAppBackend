@@ -62,7 +62,7 @@ export class WorkoutController {
   @UseGuards(AuthGuard)
   async getWorkoutDetails(@Param() params: { workoutId: string }) {
     try {
-      const workout = await this.workoutService.findByIdOrThrow({
+      const workout = await this.workoutService.getByIdOrThrow({
         workoutId: params.workoutId,
       });
       return new WorkoutApiResponse({
@@ -84,7 +84,7 @@ export class WorkoutController {
       user: UserTokenPayload;
     },
   ) {
-    const workouts = await this.workoutService.findAllByUserId({
+    const workouts = await this.workoutService.getAllByUserId({
       userId: req.user._id,
     });
     return new GetUserWorkoutsApiResponse({

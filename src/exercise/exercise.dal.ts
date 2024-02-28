@@ -15,18 +15,16 @@ export class ExerciseDal {
   }: {
     createExercise: CreateExercise;
   }): Promise<Exercise> {
-    const createdExercise = await this.exerciseModel.create(createExercise);
-    return createdExercise;
+    return this.exerciseModel.create(createExercise);
   }
 
-  async findByWorkoutId({
+  async getByWorkoutId({
     workoutId,
   }: {
     workoutId: string;
   }): Promise<Exercise[]> {
-    const exercises = await this.exerciseModel.find({
+    return this.exerciseModel.find({
       workoutId,
     });
-    return exercises;
   }
 }
