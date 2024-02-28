@@ -7,13 +7,13 @@ import {
 import { UserTokenPayload } from '../../user/user.interface';
 import * as jwt from 'jsonwebtoken';
 import { ConfigType } from '@nestjs/config';
-import { environmentConfig } from '../../config/environment.config';
+import { getJwtConfig } from '../../config/environment.config';
 
 @Injectable()
 export class JWTService {
   constructor(
-    @Inject(environmentConfig.KEY)
-    private envConfig: ConfigType<typeof environmentConfig>,
+    @Inject(getJwtConfig.KEY)
+    private jwtConfig: ConfigType<typeof getJwtConfig>,
   ) {}
   private readonly logger = new Logger();
 
@@ -25,7 +25,7 @@ export class JWTService {
       'Creating user token',
     );
     const userTokenPayload = JSON.parse(JSON.stringify(user));
-    const token = jwt.sign(userTokenPayload, this.envConfig.jwtSecret);
+    const token = jwt.sign(userTokenPayload, this.jwtConfig.secret);
     this.logger.log(
       {
         user,
@@ -46,7 +46,7 @@ export class JWTService {
       );
       const decoded = jwt.verify(
         token,
-        this.envConfig.jwtSecret,
+        this.jwtConfig.secret,
       ) as UserTokenPayload;
       this.logger.log(
         {

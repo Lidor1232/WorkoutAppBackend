@@ -1,8 +1,10 @@
 import { Test } from '@nestjs/testing';
 import { ConfigModule } from '@nestjs/config';
-import { environmentConfig } from '../../config/environment.config';
+import { getJwtConfig } from '../../config/environment.config';
 import { JWTService } from './jwt.service';
 import { UnauthorizedException } from '@nestjs/common';
+import { userMock } from '../../../test/user/mock/user.mock';
+import { jwtMock } from './jwt.mock';
 
 describe('JWTService', function () {
   let jwtService;
@@ -12,7 +14,7 @@ describe('JWTService', function () {
       imports: [
         ConfigModule.forRoot({
           envFilePath: '.env',
-          load: [environmentConfig],
+          load: [getJwtConfig],
         }),
       ],
       providers: [JWTService],
@@ -29,10 +31,10 @@ describe('JWTService', function () {
     it('', async function () {
       const payload = jwtService.createUserToken({
         user: {
-          userName: 'lidor123',
-          _id: '123',
-          firstName: '123',
-          lastName: '123',
+          userName: userMock.userName,
+          _id: userMock._id,
+          firstName: userMock.firstName,
+          lastName: userMock.lastName,
         },
       });
       expect(typeof payload).toBe('string');
@@ -42,14 +44,13 @@ describe('JWTService', function () {
   describe('verifyUserToken', function () {
     it('', async function () {
       const payload = jwtService.verifyUserToken({
-        token:
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWQ0N2ViYzVmYjNlOTA5MDRlMDgzZmMiLCJ1c2VyTmFtZSI6ImxpZG9yMTIzIiwiZmlyc3ROYW1lIjoibGlkb3IiLCJsYXN0TmFtZSI6ImR2aXIiLCJpYXQiOjE3MDg1MDgxNzd9.9g41VLQ8F_JIcR_LtL18_AEpGWeowmZhfGMjwTWI_Qc',
+        token: jwtMock.token,
       });
       const result = {
-        _id: '65d47ebc5fb3e90904e083fc',
-        userName: 'lidor123',
-        firstName: 'lidor',
-        lastName: 'dvir',
+        _id: userMock._id,
+        userName: userMock.userName,
+        firstName: userMock.firstName,
+        lastName: userMock.lastName,
         iat: 1708508177,
       };
       expect(payload).toMatchObject(result);
@@ -57,8 +58,7 @@ describe('JWTService', function () {
 
     it('', async function () {
       const payload = jwtService.verifyUserToken({
-        token:
-          'eyJhGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWQ0N2ViYzVmYjNlOTA5MDRlMDgzZmMiLCJ1c2VyTmFtZSI6ImxpZG9yMTIzIiwiZmlyc3ROYW1lIjoibGlkb3IiLCJsYXN0TmFtZSI6ImR2aXIiLCJpYXQiOjE3MDg1MDgxNzd9.9g41VLQ8F_JIcR_LtL18_AEpGWeowmZhfGMjwTWI_Qc',
+        token: jwtMock.token,
       });
       expect(payload).toBe(null);
     });
@@ -67,14 +67,13 @@ describe('JWTService', function () {
   describe('verifyUserTokenOrThrow', function () {
     it('', async function () {
       const payload = jwtService.verifyUserTokenOrThrow({
-        token:
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWQ0N2ViYzVmYjNlOTA5MDRlMDgzZmMiLCJ1c2VyTmFtZSI6ImxpZG9yMTIzIiwiZmlyc3ROYW1lIjoibGlkb3IiLCJsYXN0TmFtZSI6ImR2aXIiLCJpYXQiOjE3MDg1MDgxNzd9.9g41VLQ8F_JIcR_LtL18_AEpGWeowmZhfGMjwTWI_Qc',
+        token: jwtMock.token,
       });
       const result = {
-        _id: '65d47ebc5fb3e90904e083fc',
-        userName: 'lidor123',
-        firstName: 'lidor',
-        lastName: 'dvir',
+        _id: userMock._id,
+        userName: userMock.userName,
+        firstName: userMock.firstName,
+        lastName: userMock.lastName,
         iat: 1708508177,
       };
       expect(payload).toMatchObject(result);
@@ -83,8 +82,7 @@ describe('JWTService', function () {
     it('', function () {
       expect(function () {
         jwtService.verifyUserTokenOrThrow({
-          token:
-            'eyJhGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWQ0N2ViYzVmYjNlOTA5MDRlMDgzZmMiLCJ1c2VyTmFtZSI6ImxpZG9yMTIzIiwiZmlyc3ROYW1lIjoibGlkb3IiLCJsYXN0TmFtZSI6ImR2aXIiLCJpYXQiOjE3MDg1MDgxNzd9.9g41VLQ8F_JIcR_LtL18_AEpGWeowmZhfGMjwTWI_Qc',
+          token: jwtMock.token,
         });
       }).toThrow(UnauthorizedException);
     });
@@ -99,19 +97,15 @@ describe('JWTService', function () {
 
     it('', async function () {
       expect(function () {
-        jwtService.extractJwtFromAuthorizationHeader(
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWQ0N2ViYzVmYjNlOTA5MDRlMDgzZmMiLCJ1c2VyTmFtZSI6ImxpZG9yMTIzIiwiZmlyc3ROYW1lIjoibGlkb3IiLCJsYXN0TmFtZSI6ImR2aXIiLCJpYXQiOjE3MDg1MDgxNzd9.9g41VLQ8F_JIcR_LtL18_AEpGWeowmZhfGMjwTWI_Qc',
-        );
+        jwtService.extractJwtFromAuthorizationHeader(jwtMock.token);
       }).toThrow(UnauthorizedException);
     });
 
     it('', async function () {
       const payload = jwtService.extractJwtFromAuthorizationHeader(
-        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWQ0N2ViYzVmYjNlOTA5MDRlMDgzZmMiLCJ1c2VyTmFtZSI6ImxpZG9yMTIzIiwiZmlyc3ROYW1lIjoibGlkb3IiLCJsYXN0TmFtZSI6ImR2aXIiLCJpYXQiOjE3MDg1MDgxNzd9.9g41VLQ8F_JIcR_LtL18_AEpGWeowmZhfGMjwTWI_Qc',
+        `Bearer ${jwtMock.token}`,
       );
-      expect(payload).toBe(
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWQ0N2ViYzVmYjNlOTA5MDRlMDgzZmMiLCJ1c2VyTmFtZSI6ImxpZG9yMTIzIiwiZmlyc3ROYW1lIjoibGlkb3IiLCJsYXN0TmFtZSI6ImR2aXIiLCJpYXQiOjE3MDg1MDgxNzd9.9g41VLQ8F_JIcR_LtL18_AEpGWeowmZhfGMjwTWI_Qc',
-      );
+      expect(payload).toBe(jwtMock.token);
     });
   });
 });
