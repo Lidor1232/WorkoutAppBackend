@@ -17,6 +17,7 @@ import { AuthGuard } from '../common/guard/auth/auth.guard';
 import { UserTokenPayload } from '../user/user.interface';
 import { ExerciseService } from '../exercise/exercise.service';
 import { GetUserWorkoutsApiResponse } from './responses/get-user-workouts-api-response';
+import { WorkoutNotFound } from './workout.interface';
 
 @Controller('workout')
 export class WorkoutController {
@@ -68,7 +69,9 @@ export class WorkoutController {
         workout,
       });
     } catch (e) {
-      throw new NotFoundException(e.message);
+      if (e instanceof WorkoutNotFound) {
+        throw new NotFoundException(e.message);
+      }
     }
   }
 
