@@ -1,11 +1,11 @@
 import { Test } from '@nestjs/testing';
-import { HashService } from './hash.service';
+import { HashService } from '../hash.service';
 import { ConfigModule } from '@nestjs/config';
 import {
   getApplicationConfig,
   getDatabaseConfig,
   getJwtConfig,
-} from '../../config/environment.config';
+} from '../../../config/environment.config';
 import { hashMock } from './hash.mock';
 
 describe('HashService', function () {

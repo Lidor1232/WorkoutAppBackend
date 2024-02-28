@@ -1,9 +1,9 @@
 import { Test } from '@nestjs/testing';
 import { ConfigModule } from '@nestjs/config';
-import { getJwtConfig } from '../../config/environment.config';
-import { JWTService } from './jwt.service';
+import { getJwtConfig } from '../../../config/environment.config';
+import { JWTService } from '../jwt.service';
 import { UnauthorizedException } from '@nestjs/common';
-import { userMock } from '../../../test/user/mock/user.mock';
+import { userMock } from '../../../../test/user/mock/user.mock';
 import { jwtMock } from './jwt.mock';
 
 describe('JWTService', function () {
