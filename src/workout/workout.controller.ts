@@ -8,6 +8,7 @@ import {
   Post,
   UseGuards,
   Request,
+  NotFoundException,
 } from '@nestjs/common';
 import { WorkoutService } from './workout.service';
 import { CreateWorkout } from './workout.dto';
@@ -59,12 +60,16 @@ export class WorkoutController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
   async getWorkoutDetails(@Param() params: { workoutId: string }) {
-    const workout = await this.workoutService.findByIdOrThrow({
-      workoutId: params.workoutId,
-    });
-    return new WorkoutApiResponse({
-      workout,
-    });
+    try {
+      const workout = await this.workoutService.findByIdOrThrow({
+        workoutId: params.workoutId,
+      });
+      return new WorkoutApiResponse({
+        workout,
+      });
+    } catch (e) {
+      throw new NotFoundException(e.message);
+    }
   }
 
   @Get('/user/:userId/workouts')

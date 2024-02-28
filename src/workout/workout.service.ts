@@ -1,5 +1,5 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { CreateWorkout } from './workout.interface';
+import { Injectable, Logger } from '@nestjs/common';
+import { CreateWorkout, WorkoutNotFound } from './workout.interface';
 import { WorkoutDal } from './workout.dal';
 import { Workout } from './workout.schema';
 
@@ -86,7 +86,7 @@ export class WorkoutService {
       workoutId,
     });
     if (workout === null) {
-      throw new NotFoundException('Workout not found');
+      throw new WorkoutNotFound(workoutId);
     }
     this.logger.log(
       {
