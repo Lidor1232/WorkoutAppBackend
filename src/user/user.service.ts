@@ -1,31 +1,28 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { CreateUser } from './user.dto';
-import { BcryptService } from '../utills/bcrypt/bcrypt.service';
+import { HashService } from '../common/hash/hash.service';
 import { UserDal } from './user.dal';
 import { User } from './user.schema';
-import { LoggerService } from '../common/logger/logger.service';
+import {
+  InvalidUserPassword,
+  UserAlreadyExist,
+  UserNotFound,
+} from './user.interface';
 
 @Injectable()
 export class UserService {
-  constructor(
-    private userDal: UserDal,
-    private bcryptService: BcryptService,
-    private loggerService: LoggerService,
-  ) {}
+  constructor(private userDal: UserDal, private hashService: HashService) {}
+  private readonly logger = new Logger();
 
   async findById({ userId }: { userId: string }): Promise<User | null> {
-    this.loggerService.logger.debug(
+    this.logger.debug(
       {
         userId,
       },
       'Getting user by id',
     );
     const user = await this.userDal.findById({ userId });
-    this.loggerService.logger.info(
+    this.logger.log(
       {
         userId,
         user,
@@ -36,7 +33,7 @@ export class UserService {
   }
 
   async findByIdOrThrow({ userId }: { userId: string }): Promise<User> {
-    this.loggerService.logger.debug(
+    this.logger.debug(
       {
         userId,
       },
@@ -46,9 +43,9 @@ export class UserService {
       userId,
     });
     if (user === null) {
-      throw new NotFoundException('User not found');
+      throw new UserNotFound();
     }
-    this.loggerService.logger.info(
+    this.logger.log(
       {
         userId,
         user,
@@ -59,14 +56,14 @@ export class UserService {
   }
 
   async create({ createUser }: { createUser: CreateUser }): Promise<User> {
-    this.loggerService.logger.debug(
+    this.logger.debug(
       {
-        createUser: createUser,
+        createUser,
       },
       'Creating user',
     );
     const createdUser = await this.userDal.create(createUser);
-    this.loggerService.logger.info(
+    this.logger.log(
       {
         createUser,
         createdUser,
@@ -81,7 +78,7 @@ export class UserService {
   }: {
     userName: string;
   }): Promise<User | null> {
-    this.loggerService.logger.debug(
+    this.logger.debug(
       {
         userName,
       },
@@ -90,7 +87,7 @@ export class UserService {
     const user = await this.userDal.findByUserName({
       userName,
     });
-    this.loggerService.logger.info(
+    this.logger.log(
       {
         userName,
         user,
@@ -105,7 +102,7 @@ export class UserService {
   }: {
     userName: string;
   }): Promise<User> {
-    this.loggerService.logger.debug(
+    this.logger.debug(
       {
         userName,
       },
@@ -115,9 +112,9 @@ export class UserService {
       userName,
     });
     if (user === null) {
-      throw new NotFoundException('User not found');
+      throw new UserNotFound();
     }
-    this.loggerService.logger.info(
+    this.logger.log(
       {
         userName,
         user,
@@ -134,21 +131,21 @@ export class UserService {
     password: string;
     userPassword: string;
   }): Promise<void> {
-    this.loggerService.logger.debug(
+    this.logger.debug(
       {
         password,
         userPassword,
       },
       'Validating user password or throw',
     );
-    const isValidPassword = await this.bcryptService.isPasswordMatchHash({
-      password,
-      hash: userPassword,
+    const isValidPassword = await this.hashService.compare({
+      data: password,
+      encrypted: userPassword,
     });
     if (!isValidPassword) {
-      throw new BadRequestException('Invalid user password');
+      throw new InvalidUserPassword();
     }
-    this.loggerService.logger.info(
+    this.logger.log(
       {
         password,
         userPassword,
@@ -163,7 +160,7 @@ export class UserService {
   }: {
     userName: string;
   }): Promise<void> {
-    this.loggerService.logger.debug(
+    this.logger.debug(
       {
         userName,
       },
@@ -173,9 +170,9 @@ export class UserService {
       userName,
     });
     if (user !== null) {
-      throw new BadRequestException('User exist with this user name');
+      throw new UserAlreadyExist();
     }
-    this.loggerService.logger.info(
+    this.logger.log(
       {
         userName,
         user,

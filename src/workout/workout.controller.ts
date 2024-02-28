@@ -7,23 +7,23 @@ import {
   Param,
   Post,
   UseGuards,
+  Request,
+  NotFoundException,
 } from '@nestjs/common';
 import { WorkoutService } from './workout.service';
 import { CreateWorkout } from './workout.dto';
 import { WorkoutApiResponse } from './responses/workout-api-response';
 import { AuthGuard } from '../common/guard/auth/auth.guard';
-import { User } from '../decorators/user.decorator';
 import { UserTokenPayload } from '../user/user.interface';
 import { ExerciseService } from '../exercise/exercise.service';
 import { GetUserWorkoutsApiResponse } from './responses/get-user-workouts-api-response';
-import { StringService } from '../utills/data-structure/string/string.service';
+import { WorkoutNotFound } from './workout.interface';
 
 @Controller('workout')
 export class WorkoutController {
   constructor(
     private workoutService: WorkoutService,
     private exerciseService: ExerciseService,
-    private stringService: StringService,
   ) {}
 
   @Post('/')
@@ -31,11 +31,14 @@ export class WorkoutController {
   @UseGuards(AuthGuard)
   async createWorkout(
     @Body() body: CreateWorkout,
-    @User() user: UserTokenPayload,
+    @Request()
+    req: {
+      user: UserTokenPayload;
+    },
   ) {
     const workout = await this.workoutService.create({
       createWorkout: {
-        userId: user._id,
+        userId: req.user._id,
         date: body.date,
       },
     });
@@ -58,34 +61,35 @@ export class WorkoutController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
   async getWorkoutDetails(@Param() params: { workoutId: string }) {
-    const workout = await this.workoutService.findByIdOrThrow({
-      workoutId: params.workoutId,
-    });
-    return new WorkoutApiResponse({
-      workout,
-    });
+    try {
+      const workout = await this.workoutService.findByIdOrThrow({
+        workoutId: params.workoutId,
+      });
+      return new WorkoutApiResponse({
+        workout,
+      });
+    } catch (e) {
+      if (e instanceof WorkoutNotFound) {
+        throw new NotFoundException(e.message);
+      }
+    }
   }
 
   @Get('/user/:userId/workouts')
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
   async getUserWorkouts(
-    @User() user: UserTokenPayload,
-    @Param()
-    params: {
-      userId: string;
+    @Request()
+    req: {
+      user: UserTokenPayload;
     },
   ) {
-    this.stringService.stringsEqualOrThrow({
-      string1: user._id,
-      string2: params.userId,
-    });
     const workouts = await this.workoutService.findAllByUserId({
-      userId: params.userId,
+      userId: req.user._id,
     });
     return new GetUserWorkoutsApiResponse({
       workouts,
-      userId: params.userId,
+      userId: req.user._id,
     });
   }
 }

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ExerciseService } from './exercise.service';
 import { ExerciseController } from './exercise.controller';
-import { JWTModule } from '../utills/jwt/jwt.module';
+import { JWTModule } from '../common/jwt/jwt.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Exercise, ExerciseSchema } from './exercise.schema';
 import { ExerciseDal } from './exercise.dal';

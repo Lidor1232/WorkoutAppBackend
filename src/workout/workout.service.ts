@@ -1,22 +1,19 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateWorkout } from './workout.interface';
+import { Injectable, Logger } from '@nestjs/common';
+import { CreateWorkout, WorkoutNotFound } from './workout.interface';
 import { WorkoutDal } from './workout.dal';
 import { Workout } from './workout.schema';
-import { LoggerService } from '../common/logger/logger.service';
 
 @Injectable()
 export class WorkoutService {
-  constructor(
-    private workoutDal: WorkoutDal,
-    private loggerService: LoggerService,
-  ) {}
+  constructor(private workoutDal: WorkoutDal) {}
+  private readonly logger = new Logger();
 
   async findAllByUserId({ userId }: { userId: string }): Promise<Workout[]> {
-    this.loggerService.logger.debug({ userId }, 'Getting workouts');
+    this.logger.debug({ userId }, 'Getting workouts');
     const workouts = await this.workoutDal.findAllByUserId({
       userId,
     });
-    this.loggerService.logger.info(
+    this.logger.log(
       {
         workouts,
         userId,
@@ -31,7 +28,7 @@ export class WorkoutService {
   }: {
     createWorkout: CreateWorkout;
   }): Promise<Workout> {
-    this.loggerService.logger.debug(
+    this.logger.debug(
       {
         createWorkout,
       },
@@ -40,7 +37,7 @@ export class WorkoutService {
     const createdWorkout = await this.workoutDal.create({
       createWorkout,
     });
-    this.loggerService.logger.info(
+    this.logger.log(
       {
         createWorkout,
         createdWorkout,
@@ -55,7 +52,7 @@ export class WorkoutService {
   }: {
     workoutId: string;
   }): Promise<Workout | null> {
-    this.loggerService.logger.debug(
+    this.logger.debug(
       {
         workoutId,
       },
@@ -64,7 +61,7 @@ export class WorkoutService {
     const workout = await this.workoutDal.findById({
       workoutId,
     });
-    this.loggerService.logger.info(
+    this.logger.log(
       {
         workoutId,
         workout,
@@ -79,7 +76,7 @@ export class WorkoutService {
   }: {
     workoutId: string;
   }): Promise<Workout> {
-    this.loggerService.logger.debug(
+    this.logger.debug(
       {
         workoutId,
       },
@@ -89,9 +86,9 @@ export class WorkoutService {
       workoutId,
     });
     if (workout === null) {
-      throw new NotFoundException('Workout not found');
+      throw new WorkoutNotFound(workoutId);
     }
-    this.loggerService.logger.info(
+    this.logger.log(
       {
         workoutId,
         workout,
