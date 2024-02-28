@@ -38,7 +38,7 @@ export class WorkoutController {
   ) {
     const workout = await this.workoutService.create({
       createWorkout: {
-        userId: req.user._id,
+        userId: req.user.id,
         date: body.date,
       },
     });
@@ -47,7 +47,7 @@ export class WorkoutController {
         this.exerciseService.create({
           createExercise: {
             ...exercise,
-            workoutId: workout._id,
+            workoutId: workout.id,
           },
         }),
       ),
@@ -85,11 +85,11 @@ export class WorkoutController {
     },
   ) {
     const workouts = await this.workoutService.getAllByUserId({
-      userId: req.user._id,
+      userId: req.user.id,
     });
     return new GetUserWorkoutsApiResponse({
       workouts,
-      userId: req.user._id,
+      userId: req.user.id,
     });
   }
 }

@@ -32,7 +32,7 @@ describe('JWTService', function () {
       const payload = jwtService.createUserToken({
         user: {
           userName: userMock.userName,
-          _id: userMock._id,
+          id: userMock.id,
           firstName: userMock.firstName,
           lastName: userMock.lastName,
         },
@@ -47,7 +47,7 @@ describe('JWTService', function () {
         token: jwtMock.token,
       });
       const result = {
-        _id: userMock._id,
+        _id: userMock.id,
         userName: userMock.userName,
         firstName: userMock.firstName,
         lastName: userMock.lastName,
@@ -70,7 +70,7 @@ describe('JWTService', function () {
         token: jwtMock.token,
       });
       const result = {
-        _id: userMock._id,
+        id: userMock.id,
         userName: userMock.userName,
         firstName: userMock.firstName,
         lastName: userMock.lastName,

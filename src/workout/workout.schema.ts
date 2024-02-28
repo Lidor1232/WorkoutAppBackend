@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Types } from 'mongoose';
 
 export type WorkoutDocument = Workout & Document;
 
@@ -6,7 +7,9 @@ export type WorkoutDocument = Workout & Document;
   timestamps: true,
 })
 export class Workout {
-  _id: string;
+  _id: Types.ObjectId;
+
+  id: string;
 
   @Prop({
     type: String,
@@ -21,4 +24,10 @@ export class Workout {
   date: string;
 }
 
-export const WorkoutSchema = SchemaFactory.createForClass(Workout);
+const WorkoutSchema = SchemaFactory.createForClass(Workout);
+
+WorkoutSchema.virtual('id').get(function (this: Workout) {
+  return this._id.toString();
+});
+
+export { WorkoutSchema };

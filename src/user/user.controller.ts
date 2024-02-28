@@ -42,7 +42,7 @@ export class UserController {
   ) {
     try {
       const user = await this.userService.getByIdOrThrow({
-        userId: req.user._id,
+        userId: req.user.id,
       });
       return new UserApiResponse({
         user,
@@ -67,7 +67,7 @@ export class UserController {
       });
       const userToken = this.jwtService.createUserToken({
         user: {
-          _id: user._id,
+          id: user.id,
           userName: user.userName,
           firstName: user.firstName,
           lastName: user.lastName,

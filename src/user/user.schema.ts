@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import * as bcrypt from 'bcryptjs';
+import { Types } from 'mongoose';
 
 export type UserDocument = User & Document;
 
@@ -7,7 +8,9 @@ export type UserDocument = User & Document;
   timestamps: true,
 })
 export class User {
-  _id: string;
+  _id: Types.ObjectId;
+
+  id: string;
 
   @Prop({
     type: String,
@@ -39,6 +42,10 @@ export class User {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+
+UserSchema.virtual('id').get(function (this: User) {
+  return this._id.toString();
+});
 
 UserSchema.pre('save', function (next) {
   if (!this.isModified('password')) {
