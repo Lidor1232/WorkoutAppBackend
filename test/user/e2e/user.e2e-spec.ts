@@ -57,7 +57,7 @@ describe('user', function () {
 
       // Test
       await request(app.getHttpServer())
-        .get(`/user/${res.body.user._id}/details`)
+        .get(`/user/details`)
         .set('Authorization', `Bearer ${res.body.token}`)
         .expect(200)
         .expect({
