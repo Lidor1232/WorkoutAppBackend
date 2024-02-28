@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Types } from 'mongoose';
 
 export type ExerciseDocument = Exercise & Document;
 
@@ -21,7 +22,9 @@ export class Set {
   timestamps: true,
 })
 export class Exercise {
-  _id: string;
+  _id: Types.ObjectId;
+
+  id: string;
 
   @Prop({
     type: String,
@@ -42,4 +45,10 @@ export class Exercise {
   sets: Set[];
 }
 
-export const ExerciseSchema = SchemaFactory.createForClass(Exercise);
+const ExerciseSchema = SchemaFactory.createForClass(Exercise);
+
+ExerciseSchema.virtual('id').get(function (this: Exercise) {
+  return this._id.toString();
+});
+
+export { ExerciseSchema };

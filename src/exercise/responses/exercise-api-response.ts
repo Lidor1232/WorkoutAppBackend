@@ -2,7 +2,7 @@ import { Exercise } from '../exercise.schema';
 import { SetApiResponse } from './set-api-response';
 
 export class ExerciseApiResponse {
-  _id: string;
+  id: string;
 
   name: string;
 
@@ -11,7 +11,7 @@ export class ExerciseApiResponse {
   sets: SetApiResponse[];
 
   constructor({ exercise }: { exercise: Exercise }) {
-    this._id = exercise._id;
+    this.id = exercise.id;
     this.name = exercise.name;
     this.sets = exercise.sets.map(
       (set) =>

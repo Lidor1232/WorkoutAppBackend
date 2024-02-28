@@ -41,8 +41,8 @@ export class UserController {
     },
   ) {
     try {
-      const user = await this.userService.findByIdOrThrow({
-        userId: req.user._id,
+      const user = await this.userService.getByIdOrThrow({
+        userId: req.user.id,
       });
       return new UserApiResponse({
         user,
@@ -58,7 +58,7 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   async loginUser(@Body() body: UserLogin) {
     try {
-      const user = await this.userService.findByUserNameOrThrow({
+      const user = await this.userService.getByUserNameOrThrow({
         userName: body.userName,
       });
       await this.userService.validDocPasswordByPasswordOrThrow({
@@ -67,7 +67,7 @@ export class UserController {
       });
       const userToken = this.jwtService.createUserToken({
         user: {
-          _id: user._id,
+          id: user.id,
           userName: user.userName,
           firstName: user.firstName,
           lastName: user.lastName,

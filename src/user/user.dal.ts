@@ -9,23 +9,20 @@ export class UserDal {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
   async create(createUser: CreateUser): Promise<User> {
-    const createdUser = await this.userModel.create(createUser);
-    return createdUser;
+    return this.userModel.create(createUser);
   }
 
-  async findById({ userId }: { userId: string }): Promise<User | null> {
-    const user = this.userModel.findById(userId);
-    return user;
+  async getById({ userId }: { userId: string }): Promise<User | null> {
+    return this.userModel.findById(userId);
   }
 
-  async findByUserName({
+  async getByUserName({
     userName,
   }: {
     userName: string;
   }): Promise<User | null> {
-    const user = this.userModel.findOne({
+    return this.userModel.findOne({
       userName,
     });
-    return user;
   }
 }

@@ -10,11 +10,10 @@ export class WorkoutDal {
     @InjectModel(Workout.name) private workoutModel: Model<Workout>,
   ) {}
 
-  async findAllByUserId({ userId }: { userId: string }): Promise<Workout[]> {
-    const workouts = this.workoutModel.find({
+  async getAllByUserId({ userId }: { userId: string }): Promise<Workout[]> {
+    return this.workoutModel.find({
       userId,
     });
-    return workouts;
   }
 
   async create({
@@ -22,16 +21,10 @@ export class WorkoutDal {
   }: {
     createWorkout: CreateWorkout;
   }): Promise<Workout> {
-    const createdWorkout = await this.workoutModel.create(createWorkout);
-    return createdWorkout;
+    return this.workoutModel.create(createWorkout);
   }
 
-  async findById({
-    workoutId,
-  }: {
-    workoutId: string;
-  }): Promise<Workout | null> {
-    const workout = this.workoutModel.findById(workoutId);
-    return workout;
+  async getById({ workoutId }: { workoutId: string }): Promise<Workout | null> {
+    return this.workoutModel.findById(workoutId);
   }
 }

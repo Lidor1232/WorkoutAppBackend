@@ -1,5 +1,5 @@
 export interface UserTokenPayload {
-  _id: string;
+  id: string;
   firstName: string;
   lastName: string;
   userName: string;

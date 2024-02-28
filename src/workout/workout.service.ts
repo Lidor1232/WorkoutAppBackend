@@ -8,9 +8,9 @@ export class WorkoutService {
   constructor(private workoutDal: WorkoutDal) {}
   private readonly logger = new Logger();
 
-  async findAllByUserId({ userId }: { userId: string }): Promise<Workout[]> {
-    this.logger.debug({ userId }, 'Getting workouts');
-    const workouts = await this.workoutDal.findAllByUserId({
+  async getAllByUserId({ userId }: { userId: string }): Promise<Workout[]> {
+    this.logger.debug({ userId }, 'Getting workouts by user id');
+    const workouts = await this.workoutDal.getAllByUserId({
       userId,
     });
     this.logger.log(
@@ -18,7 +18,7 @@ export class WorkoutService {
         workouts,
         userId,
       },
-      'Got workouts',
+      'Got workouts by user id',
     );
     return workouts;
   }
@@ -47,18 +47,14 @@ export class WorkoutService {
     return createdWorkout;
   }
 
-  async findById({
-    workoutId,
-  }: {
-    workoutId: string;
-  }): Promise<Workout | null> {
+  async getById({ workoutId }: { workoutId: string }): Promise<Workout | null> {
     this.logger.debug(
       {
         workoutId,
       },
       'Getting workout by id',
     );
-    const workout = await this.workoutDal.findById({
+    const workout = await this.workoutDal.getById({
       workoutId,
     });
     this.logger.log(
@@ -71,18 +67,14 @@ export class WorkoutService {
     return workout;
   }
 
-  async findByIdOrThrow({
-    workoutId,
-  }: {
-    workoutId: string;
-  }): Promise<Workout> {
+  async getByIdOrThrow({ workoutId }: { workoutId: string }): Promise<Workout> {
     this.logger.debug(
       {
         workoutId,
       },
       'Getting workout by id or throw',
     );
-    const workout = await this.findById({
+    const workout = await this.getById({
       workoutId,
     });
     if (workout === null) {
