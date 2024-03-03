@@ -51,7 +51,7 @@ describe('JWTService', function () {
         userName: userMock.userName,
         firstName: userMock.firstName,
         lastName: userMock.lastName,
-        iat: 1708508177,
+        iat: 1709116184,
       };
       expect(payload).toMatchObject(result);
     });
@@ -74,7 +74,7 @@ describe('JWTService', function () {
         userName: userMock.userName,
         firstName: userMock.firstName,
         lastName: userMock.lastName,
-        iat: 1708508177,
+        iat: 1709116184,
       };
       expect(payload).toMatchObject(result);
     });

@@ -7,8 +7,7 @@ import {
   Post,
   UseGuards,
   Request,
-  NotFoundException,
-  BadRequestException,
+  UseFilters,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUser, UserLogin } from './user.dto';
@@ -17,14 +16,11 @@ import { JWTService } from '../common/jwt/jwt.service';
 import { CreateUserApiResponse } from './responses/create-user-api-response';
 import { LoginUserApiResponse } from './responses/login-user-api-response';
 import { AuthGuard } from '../common/guard/auth/auth.guard';
-import {
-  InvalidUserPassword,
-  UserAlreadyExist,
-  UserNotFound,
-  UserTokenPayload,
-} from './user.interface';
+import { UserTokenPayload } from './user.interface';
+import { HttpExceptionFilter } from './user.filter';
 
 @Controller('user')
+@UseFilters(new HttpExceptionFilter())
 export class UserController {
   constructor(
     private userService: UserService,
@@ -40,71 +36,55 @@ export class UserController {
       user: UserTokenPayload;
     },
   ) {
-    try {
-      const user = await this.userService.getByIdOrThrow({
-        userId: req.user.id,
-      });
-      return new UserApiResponse({
-        user,
-      });
-    } catch (e) {
-      if (e instanceof UserNotFound) {
-        throw new NotFoundException(e.message);
-      }
-    }
+    const user = await this.userService.getByIdOrThrow({
+      userId: req.user.id,
+    });
+    return new UserApiResponse({
+      user,
+    });
   }
 
   @Post('/login')
   @HttpCode(HttpStatus.OK)
   async loginUser(@Body() body: UserLogin) {
-    try {
-      const user = await this.userService.getByUserNameOrThrow({
-        userName: body.userName,
-      });
-      await this.userService.validDocPasswordByPasswordOrThrow({
-        userPassword: user.password,
-        password: body.password,
-      });
-      const userToken = this.jwtService.createUserToken({
-        user: {
-          id: user.id,
-          userName: user.userName,
-          firstName: user.firstName,
-          lastName: user.lastName,
-        },
-      });
-      return new LoginUserApiResponse({ user, token: userToken });
-    } catch (e) {
-      if (e instanceof UserNotFound) {
-        throw new NotFoundException(e.message);
-      }
-      if (e instanceof InvalidUserPassword) {
-        throw new BadRequestException(e.message);
-      }
-    }
+    const user = await this.userService.getByUserNameOrThrow({
+      userName: body.userName,
+    });
+    await this.userService.validDocPasswordByPasswordOrThrow({
+      userPassword: user.password,
+      password: body.password,
+    });
+    const userToken = this.jwtService.createUserToken({
+      user: {
+        id: user.id,
+        userName: user.userName,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      },
+    });
+    return new LoginUserApiResponse({ user, token: userToken });
   }
 
   @Post('/create')
   @HttpCode(HttpStatus.CREATED)
   async createUser(@Body() body: CreateUser) {
-    try {
-      await this.userService.docNotExistByUserNameOrThrow({
-        userName: body.userName,
-      });
-      const user = await this.userService.create({
-        createUser: body,
-      });
-      const userToken = this.jwtService.createUserToken({
-        user,
-      });
-      return new CreateUserApiResponse({
-        user,
-        token: userToken,
-      });
-    } catch (e) {
-      if (e instanceof UserAlreadyExist) {
-        throw new BadRequestException(e.message);
-      }
-    }
+    await this.userService.docNotExistByUserNameOrThrow({
+      userName: body.userName,
+    });
+    const user = await this.userService.create({
+      createUser: body,
+    });
+    const userToken = this.jwtService.createUserToken({
+      user: {
+        id: user.id,
+        userName: user.userName,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      },
+    });
+    return new CreateUserApiResponse({
+      user,
+      token: userToken,
+    });
   }
 }
