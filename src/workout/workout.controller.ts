@@ -9,6 +9,7 @@ import {
   UseGuards,
   Request,
   NotFoundException,
+  UseFilters,
 } from '@nestjs/common';
 import { WorkoutService } from './workout.service';
 import { CreateWorkout } from './workout.dto';
@@ -18,8 +19,10 @@ import { UserTokenPayload } from '../user/user.interface';
 import { ExerciseService } from '../exercise/exercise.service';
 import { GetUserWorkoutsApiResponse } from './responses/get-user-workouts-api-response';
 import { WorkoutNotFound } from './workout.interface';
+import { HttpExceptionFilter } from './workout.filter';
 
 @Controller('workout')
+@UseFilters(new HttpExceptionFilter())
 export class WorkoutController {
   constructor(
     private workoutService: WorkoutService,
